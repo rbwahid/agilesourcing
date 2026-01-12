@@ -1,0 +1,94 @@
+# ===================
+# Project Root
+# ===================
+.DS_Store
+*.swp
+*.swo
+.idea/
+.vscode/
+*.log
+
+# Claude Code
+.claude/
+
+# ===================
+# Laravel Backend
+# ===================
+backend/.env
+backend/.env.backup
+backend/.env.production
+backend/.phpunit.result.cache
+backend/Homestead.json
+backend/Homestead.yaml
+backend/auth.json
+backend/npm-debug.log
+backend/yarn-error.log
+
+# Laravel vendor and cache
+backend/vendor/
+backend/node_modules/
+backend/storage/*.key
+backend/storage/framework/cache/data/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+backend/storage/logs/*
+!backend/storage/framework/cache/.gitkeep
+!backend/storage/framework/sessions/.gitkeep
+!backend/storage/framework/views/.gitkeep
+!backend/storage/logs/.gitkeep
+
+# Laravel compiled
+backend/bootstrap/cache/*
+!backend/bootstrap/cache/.gitkeep
+
+# ===================
+# Next.js Frontend
+# ===================
+frontend/.env*.local
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# Next.js build
+frontend/.next/
+frontend/out/
+frontend/build/
+
+# Node modules
+frontend/node_modules/
+
+# Debug
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/.pnpm-debug.log*
+
+# Vercel
+frontend/.vercel
+
+# TypeScript
+frontend/*.tsbuildinfo
+frontend/next-env.d.ts
+
+# Testing
+frontend/coverage/
+
+# ===================
+# IDE & Editors
+# ===================
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# ===================
+# OS Files
+# ===================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
