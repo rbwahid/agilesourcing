@@ -10,6 +10,10 @@ import {
   HelpCircle,
   Inbox,
   BarChart3,
+  Heart,
+  UserCircle,
+  Award,
+  Package,
 } from 'lucide-react';
 import type { NavigationItem } from '@/types/navigation';
 import type { UserRole } from '@/types';
@@ -18,13 +22,17 @@ export const designerNavigation: NavigationItem[] = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { label: 'My Designs', href: '/designs', icon: Palette },
   { label: 'Validations', href: '/validations', icon: BarChart3 },
-  { label: 'Suppliers', href: '/suppliers', icon: Building2 },
+  { label: 'Find Suppliers', href: '/suppliers', icon: Building2 },
+  { label: 'Saved Suppliers', href: '/suppliers/saved', icon: Heart },
   { label: 'Messages', href: '/messages', icon: MessageSquare },
   { label: 'Settings', href: '/settings', icon: Settings },
 ];
 
 export const supplierNavigation: NavigationItem[] = [
   { label: 'Dashboard', href: '/supplier-dashboard', icon: LayoutDashboard },
+  { label: 'Profile', href: '/supplier-profile', icon: UserCircle },
+  { label: 'Certifications', href: '/supplier-certifications', icon: Award },
+  { label: 'Catalog', href: '/supplier-catalog', icon: Package },
   { label: 'Inquiries', href: '/inquiries', icon: Inbox },
   { label: 'Messages', href: '/messages', icon: MessageSquare },
   { label: 'Settings', href: '/settings', icon: Settings },

@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { useSidebar } from '@/lib/hooks/use-sidebar';
 import { useAuth } from '@/lib/hooks/use-auth';
+import { useUnreadCount } from '@/lib/hooks/use-messages';
 import { getNavigationForRole, getDashboardPathForRole } from '@/config/navigation';
 import { Sidebar } from './sidebar';
 import { MobileSidebar } from './mobile-sidebar';
@@ -29,8 +30,20 @@ export function DashboardShell({ children, role }: DashboardShellProps) {
     closeMobile,
   } = useSidebar();
 
-  // Get navigation items based on role
-  const navigationItems = getNavigationForRole(role as UserRole);
+  // Fetch unread messages count for badge
+  const { data: unreadData } = useUnreadCount(!!user);
+  const unreadCount = unreadData?.unread_count ?? 0;
+
+  // Get navigation items based on role, with unread count badge for messages
+  const navigationItems = useMemo(() => {
+    const baseItems = getNavigationForRole(role as UserRole);
+    return baseItems.map((item) => {
+      if (item.href === '/messages' && unreadCount > 0) {
+        return { ...item, badge: unreadCount };
+      }
+      return item;
+    });
+  }, [role, unreadCount]);
 
   // Redirect if not authenticated
   useEffect(() => {

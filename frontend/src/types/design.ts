@@ -158,6 +158,58 @@ export interface DesignStats {
 }
 
 /**
+ * Extended designer dashboard stats
+ */
+export interface DesignerDashboardStats {
+  // Design counts
+  total_designs: number;
+  published_designs: number;
+  draft_designs: number;
+
+  // Validation counts
+  total_validations: number;
+  pending_validations: number;
+  completed_validations: number;
+
+  // Other
+  saved_suppliers: number;
+  total_views: number;
+  views_change: number; // percentage change from last period
+}
+
+/**
+ * Designer activity types
+ */
+export type DesignerActivityType =
+  | 'design_created'
+  | 'design_published'
+  | 'validation_started'
+  | 'validation_completed'
+  | 'supplier_saved';
+
+/**
+ * Designer activity item
+ */
+export interface DesignerActivity {
+  id: number;
+  type: DesignerActivityType;
+  design?: {
+    id: number;
+    title: string;
+    file_url?: string;
+  };
+  validation?: {
+    id: number;
+    validation_score?: number | null;
+  };
+  supplier?: {
+    id: number;
+    business_name: string;
+  };
+  created_at: string;
+}
+
+/**
  * Constants for design options
  */
 export const DESIGN_CATEGORIES = [

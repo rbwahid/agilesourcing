@@ -143,4 +143,12 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->role === 'super_admin';
     }
+
+    /**
+     * Check if the user has ever had a subscription.
+     */
+    public function hasEverSubscribed(): bool
+    {
+        return $this->subscriptions()->count() > 0;
+    }
 }

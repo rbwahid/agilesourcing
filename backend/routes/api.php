@@ -8,8 +8,20 @@ use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\DesignController;
 use App\Http\Controllers\Api\V1\InstagramAuthController;
 use App\Http\Controllers\Api\V1\MockupController;
+use App\Http\Controllers\Api\V1\ProductCatalogController;
 use App\Http\Controllers\Api\V1\ProfileController;
+use App\Http\Controllers\Api\V1\SavedSupplierController;
+use App\Http\Controllers\Api\V1\SupplierCertificationController;
+use App\Http\Controllers\Api\V1\SupplierController;
+use App\Http\Controllers\Api\V1\SupplierSearchController;
 use App\Http\Controllers\Api\V1\ValidationController;
+use App\Http\Controllers\Api\V1\ConversationController;
+use App\Http\Controllers\Api\V1\MessageController;
+use App\Http\Controllers\Api\V1\InquiryController;
+use App\Http\Controllers\Api\V1\PlanController;
+use App\Http\Controllers\Api\V1\SubscriptionController;
+use App\Http\Controllers\Api\V1\PaymentMethodController;
+use App\Http\Controllers\Api\V1\BillingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -122,5 +134,160 @@ Route::middleware('auth:sanctum')->group(function () {
             ->name('validations.cancel');
         Route::get('/validations/{validation}/metrics', [ValidationController::class, 'metrics'])
             ->name('validations.metrics');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Supplier Directory Routes (Public for authenticated users)
+        |--------------------------------------------------------------------------
+        */
+        Route::get('/suppliers', [SupplierSearchController::class, 'index'])
+            ->name('suppliers.index');
+        Route::get('/suppliers/featured', [SupplierSearchController::class, 'featured'])
+            ->name('suppliers.featured');
+        Route::get('/suppliers/recommendations', [SupplierSearchController::class, 'recommendations'])
+            ->name('suppliers.recommendations');
+        Route::get('/suppliers/{supplier}', [SupplierController::class, 'show'])
+            ->name('suppliers.show');
+        Route::post('/suppliers/{supplier}/view', [SupplierController::class, 'recordView'])
+            ->name('suppliers.view');
+        Route::get('/suppliers/{supplier}/catalog', [ProductCatalogController::class, 'index'])
+            ->name('suppliers.catalog');
+        Route::get('/suppliers/{supplier}/saved-check', [SavedSupplierController::class, 'check'])
+            ->name('suppliers.saved-check');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Saved Suppliers Routes (Designer only)
+        |--------------------------------------------------------------------------
+        */
+        Route::get('/saved-suppliers', [SavedSupplierController::class, 'index'])
+            ->name('saved-suppliers.index');
+        Route::post('/suppliers/{supplier}/save', [SavedSupplierController::class, 'store'])
+            ->name('suppliers.save');
+        Route::delete('/suppliers/{supplier}/save', [SavedSupplierController::class, 'destroy'])
+            ->name('suppliers.unsave');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Supplier Profile Management Routes (Supplier only)
+        |--------------------------------------------------------------------------
+        */
+        Route::prefix('supplier')->name('supplier.')->group(function () {
+            // Profile
+            Route::get('/profile', [SupplierController::class, 'profile'])
+                ->name('profile.show');
+            Route::put('/profile', [SupplierController::class, 'update'])
+                ->name('profile.update');
+            Route::post('/logo', [SupplierController::class, 'uploadLogo'])
+                ->name('logo.upload');
+
+            // Stats & Analytics
+            Route::get('/stats', [SupplierController::class, 'stats'])
+                ->name('stats');
+            Route::get('/stats/views', [SupplierController::class, 'viewsTimeline'])
+                ->name('stats.views');
+            Route::get('/activity', [SupplierController::class, 'activity'])
+                ->name('activity');
+
+            // Certifications
+            Route::get('/certifications', [SupplierCertificationController::class, 'index'])
+                ->name('certifications.index');
+            Route::post('/certifications', [SupplierCertificationController::class, 'store'])
+                ->name('certifications.store');
+            Route::delete('/certifications/{certification}', [SupplierCertificationController::class, 'destroy'])
+                ->name('certifications.destroy');
+            Route::post('/certifications/{certification}/verify', [SupplierCertificationController::class, 'requestVerification'])
+                ->name('certifications.verify');
+
+            // Product Catalog
+            Route::get('/catalog', [ProductCatalogController::class, 'ownIndex'])
+                ->name('catalog.index');
+            Route::post('/catalog', [ProductCatalogController::class, 'store'])
+                ->name('catalog.store');
+            Route::put('/catalog/{item}', [ProductCatalogController::class, 'update'])
+                ->name('catalog.update');
+            Route::delete('/catalog/{item}', [ProductCatalogController::class, 'destroy'])
+                ->name('catalog.destroy');
+        });
+
+        /*
+        |--------------------------------------------------------------------------
+        | Messaging Routes
+        |--------------------------------------------------------------------------
+        */
+        // Conversations
+        Route::get('/conversations', [ConversationController::class, 'index'])
+            ->name('conversations.index');
+        Route::post('/conversations', [ConversationController::class, 'store'])
+            ->name('conversations.store');
+        Route::get('/conversations/unread-count', [ConversationController::class, 'unreadCount'])
+            ->name('conversations.unread-count');
+        Route::get('/conversations/{conversation}', [ConversationController::class, 'show'])
+            ->name('conversations.show');
+        Route::post('/conversations/{conversation}/archive', [ConversationController::class, 'archive'])
+            ->name('conversations.archive');
+
+        // Messages
+        Route::get('/conversations/{conversation}/messages', [MessageController::class, 'index'])
+            ->name('conversations.messages.index');
+        Route::post('/conversations/{conversation}/messages', [MessageController::class, 'store'])
+            ->name('conversations.messages.store');
+        Route::post('/conversations/{conversation}/read', [MessageController::class, 'markRead'])
+            ->name('conversations.read');
+        Route::delete('/messages/{message}', [MessageController::class, 'destroy'])
+            ->name('messages.destroy');
+
+        // Inquiries (all authenticated users can view)
+        Route::get('/inquiries', [InquiryController::class, 'index'])
+            ->name('inquiries.index');
+        Route::put('/inquiries/{inquiry}/status', [InquiryController::class, 'updateStatus'])
+            ->name('inquiries.update-status');
+        Route::get('/inquiries/stats', [InquiryController::class, 'stats'])
+            ->name('inquiries.stats');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Subscription & Billing Routes
+        |--------------------------------------------------------------------------
+        */
+        // Plans (public info for authenticated users)
+        Route::get('/plans', [PlanController::class, 'index'])
+            ->name('plans.index');
+        Route::get('/plans/{plan:slug}', [PlanController::class, 'show'])
+            ->name('plans.show');
+
+        // Subscription Management
+        Route::get('/subscription', [SubscriptionController::class, 'current'])
+            ->name('subscription.current');
+        Route::post('/subscription', [SubscriptionController::class, 'subscribe'])
+            ->name('subscription.subscribe');
+        Route::put('/subscription', [SubscriptionController::class, 'changePlan'])
+            ->name('subscription.change-plan');
+        Route::post('/subscription/cancel', [SubscriptionController::class, 'cancel'])
+            ->name('subscription.cancel');
+        Route::post('/subscription/resume', [SubscriptionController::class, 'resume'])
+            ->name('subscription.resume');
+        Route::get('/subscription/usage', [SubscriptionController::class, 'usage'])
+            ->name('subscription.usage');
+
+        // Payment Methods
+        Route::get('/payment-methods', [PaymentMethodController::class, 'index'])
+            ->name('payment-methods.index');
+        Route::post('/payment-methods/setup-intent', [PaymentMethodController::class, 'setupIntent'])
+            ->name('payment-methods.setup-intent');
+        Route::post('/payment-methods', [PaymentMethodController::class, 'store'])
+            ->name('payment-methods.store');
+        Route::put('/payment-methods/default', [PaymentMethodController::class, 'setDefault'])
+            ->name('payment-methods.set-default');
+        Route::delete('/payment-methods/{id}', [PaymentMethodController::class, 'destroy'])
+            ->name('payment-methods.destroy');
+
+        // Billing & Invoices
+        Route::get('/billing/invoices', [BillingController::class, 'invoices'])
+            ->name('billing.invoices');
+        Route::get('/billing/invoices/{id}/download', [BillingController::class, 'downloadInvoice'])
+            ->name('billing.invoices.download');
+        Route::get('/billing/upcoming', [BillingController::class, 'upcomingInvoice'])
+            ->name('billing.upcoming');
     });
 });

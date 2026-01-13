@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
+use App\Listeners\StripeEventListener;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Cashier\Events\WebhookReceived;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +26,15 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureRateLimiting();
+        $this->registerStripeEventListeners();
+    }
+
+    /**
+     * Register Stripe webhook event listeners.
+     */
+    protected function registerStripeEventListeners(): void
+    {
+        Event::listen(WebhookReceived::class, StripeEventListener::class);
     }
 
     /**

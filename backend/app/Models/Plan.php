@@ -15,6 +15,9 @@ class Plan extends Model
         'user_type',
         'price_monthly',
         'price_annual',
+        'stripe_price_monthly_id',
+        'stripe_price_annual_id',
+        'stripe_product_id',
         'features',
         'design_uploads_limit',
         'validations_limit',
@@ -71,5 +74,25 @@ class Plan extends Model
     public function hasUnlimitedValidations(): bool
     {
         return $this->validations_limit === null;
+    }
+
+    /**
+     * Get the Stripe price ID for the given billing period.
+     */
+    public function getStripePriceId(string $billingPeriod): ?string
+    {
+        return $billingPeriod === 'annual'
+            ? $this->stripe_price_annual_id
+            : $this->stripe_price_monthly_id;
+    }
+
+    /**
+     * Get the price for the given billing period.
+     */
+    public function getPriceForPeriod(string $billingPeriod): float
+    {
+        return $billingPeriod === 'annual'
+            ? (float) $this->price_annual
+            : (float) $this->price_monthly;
     }
 }
