@@ -289,5 +289,48 @@ Route::middleware('auth:sanctum')->group(function () {
             ->name('billing.invoices.download');
         Route::get('/billing/upcoming', [BillingController::class, 'upcomingInvoice'])
             ->name('billing.upcoming');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Admin Routes (Admin/Super Admin only)
+        |--------------------------------------------------------------------------
+        */
+        Route::prefix('admin')->middleware('role:admin,super_admin')->name('admin.')->group(function () {
+            // Dashboard Stats
+            Route::get('/stats', [\App\Http\Controllers\Api\Admin\AdminController::class, 'stats'])
+                ->name('stats');
+            Route::get('/signup-trends', [\App\Http\Controllers\Api\Admin\AdminController::class, 'signupTrends'])
+                ->name('signup-trends');
+            Route::get('/recent-activity', [\App\Http\Controllers\Api\Admin\AdminController::class, 'recentActivity'])
+                ->name('recent-activity');
+
+            // User Management
+            Route::get('/users', [\App\Http\Controllers\Api\Admin\AdminController::class, 'users'])
+                ->name('users.index');
+            Route::get('/users/{user}', [\App\Http\Controllers\Api\Admin\AdminController::class, 'showUser'])
+                ->name('users.show');
+            Route::put('/users/{user}', [\App\Http\Controllers\Api\Admin\AdminController::class, 'updateUser'])
+                ->name('users.update');
+            Route::post('/users/{user}/suspend', [\App\Http\Controllers\Api\Admin\AdminController::class, 'suspendUser'])
+                ->name('users.suspend');
+            Route::post('/users/{user}/reactivate', [\App\Http\Controllers\Api\Admin\AdminController::class, 'reactivateUser'])
+                ->name('users.reactivate');
+
+            // Verification Management
+            Route::get('/verifications', [\App\Http\Controllers\Api\Admin\VerificationController::class, 'index'])
+                ->name('verifications.index');
+            Route::get('/verifications/types', [\App\Http\Controllers\Api\Admin\VerificationController::class, 'types'])
+                ->name('verifications.types');
+            Route::get('/verifications/{certification}', [\App\Http\Controllers\Api\Admin\VerificationController::class, 'show'])
+                ->name('verifications.show');
+            Route::post('/verifications/{certification}/approve', [\App\Http\Controllers\Api\Admin\VerificationController::class, 'approve'])
+                ->name('verifications.approve');
+            Route::post('/verifications/{certification}/reject', [\App\Http\Controllers\Api\Admin\VerificationController::class, 'reject'])
+                ->name('verifications.reject');
+
+            // Audit Logs
+            Route::get('/audit-logs', [\App\Http\Controllers\Api\Admin\AdminController::class, 'auditLogs'])
+                ->name('audit-logs');
+        });
     });
 });

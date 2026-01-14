@@ -869,85 +869,105 @@ frontend/
 
 ## Phase 9: Admin Panel - Core (Weeks 29-32)
 
-### 9.1 Admin Authentication
+> **Note:** Admin authentication uses the existing login system. Users with `admin` or `super_admin` roles
+> are automatically redirected to `/admin-dashboard` after login. No separate admin login is needed.
+>
+> **Existing Infrastructure:**
+> - `EnsureUserHasRole` middleware for API route protection
+> - `DashboardShell` with admin role checking
+> - Admin navigation configured in `config/navigation.ts`
+> - User model has `isAdmin()`, `isSuperAdmin()` methods
+> - Spatie Laravel Permission for role management
 
-- [ ] **Create admin login page**
-  - Build separate admin login
-  - Implement admin auth check
-  - Set up admin session management
+### 9.1 Admin Backend API
 
-- [ ] **Implement admin middleware**
-  - Create admin role verification
-  - Handle unauthorized access
-  - Log admin access attempts
+- [ ] **Create AdminStatsService**
+  - Platform overview stats (total users, by role, active)
+  - Subscription metrics (active, trialing, cancelled, MRR)
+  - Signup trends (daily/weekly/monthly)
+  - Pending verification count
 
-### 9.2 Admin Dashboard
+- [ ] **Create AdminController**
+  - GET /admin/stats - Dashboard statistics
+  - GET /admin/users - List users with filters
+  - GET /admin/users/{id} - User details with subscription/activity
+  - PUT /admin/users/{id} - Update user (status, role)
+  - POST /admin/users/{id}/suspend - Suspend user account
+  - POST /admin/users/{id}/reactivate - Reactivate user account
 
-- [ ] **Build metrics overview**
-  - Display MRR and revenue
-  - Show active user counts
-  - Present signup trends
+- [ ] **Create VerificationController**
+  - GET /admin/verifications - List pending supplier verifications
+  - GET /admin/verifications/{id} - Verification details with documents
+  - POST /admin/verifications/{id}/approve - Approve with badge
+  - POST /admin/verifications/{id}/reject - Reject with feedback
 
-- [ ] **Create AI usage widgets**
-  - Show API call counts
-  - Display cost tracking
-  - Monitor error rates
+- [ ] **Add admin route group with middleware**
+  - Apply role:admin,super_admin middleware
+  - Add rate limiting for admin routes
 
-- [ ] **Implement quick stats**
-  - New signups today/week
-  - Pending verifications
-  - Failed payments count
+### 9.2 Admin Dashboard Page
 
-### 9.3 User Management
+- [ ] **Build real-time metrics overview**
+  - Total users card (designers, suppliers, admins)
+  - Active subscriptions card with MRR
+  - Pending verifications card with action link
+  - Recent signups card with trends
 
-- [ ] **Build user directory**
-  - List all users with pagination
-  - Implement search by email/name
-  - Add filter by role/status
+- [ ] **Create recent activity widget**
+  - Recent user registrations
+  - Recent subscription changes
+  - Recent verification submissions
 
-- [ ] **Create user detail view**
-  - Display user information
-  - Show subscription status
-  - Present activity history
+- [ ] **Add quick actions panel**
+  - Link to user management
+  - Link to verification queue
+  - Link to subscription overview
+
+### 9.3 User Management Pages
+
+- [ ] **Build users list page (/users)**
+  - Data table with pagination
+  - Search by email/name
+  - Filter by role (designer, supplier, admin)
+  - Filter by status (active, suspended)
+  - Sort by created_at, last_login_at
+
+- [ ] **Create user detail page (/users/[id])**
+  - User profile information
+  - Subscription status and history
+  - Login history / last activity
+  - Action buttons (suspend, edit role)
 
 - [ ] **Implement user actions**
-  - Suspend/reactivate accounts
-  - Edit user details
-  - Delete user accounts
+  - Suspend/reactivate account confirmation modal
+  - Role change dropdown (with super_admin restriction)
+  - Activity log for user
 
-- [ ] **Build role management**
-  - View user roles
-  - Assign/remove roles
-  - Track role changes
+### 9.4 Supplier Verification Pages
 
-### 9.4 Supplier Verification
+- [ ] **Build verification queue page (/verifications)**
+  - List pending supplier certifications
+  - Show supplier info, certification type, submitted date
+  - Quick preview of uploaded documents
+  - Filter by certification type, submission date
 
-- [ ] **Create verification queue**
-  - List pending verifications
-  - Sort by submission date
-  - Show verification details
+- [ ] **Create verification detail page (/verifications/[id])**
+  - Full supplier profile view
+  - Document viewer for uploaded certifications
+  - Approval form with badge assignment
+  - Rejection form with feedback textarea
+  - Send notification on approval/rejection
 
-- [ ] **Build document review**
-  - Display uploaded certifications
-  - Allow document viewing
-  - Add verification notes
+### 9.5 Audit Logging (Backend)
 
-- [ ] **Implement approval workflow**
-  - Approve with verification badge
-  - Reject with feedback
-  - Send notification emails
+- [ ] **Configure Spatie Activity Log**
+  - Log admin user actions automatically
+  - Log subject (user/verification affected)
+  - Store causer (admin who performed action)
 
-### 9.5 Audit Logging
-
-- [ ] **Implement audit log system**
-  - Log all admin actions
-  - Store action details
-  - Track acting admin
-
-- [ ] **Build audit log viewer**
-  - Display action history
-  - Filter by admin/action type
-  - Search audit logs
+- [ ] **Add audit endpoints**
+  - GET /admin/audit-logs - List recent admin actions
+  - Filter by admin, action type, date range
 
 ---
 
