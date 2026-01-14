@@ -127,6 +127,25 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
+        /*
+        |--------------------------------------------------------------------------
+        | Security Log Channel
+        |--------------------------------------------------------------------------
+        |
+        | This channel logs security-related events such as failed login attempts,
+        | account lockouts, suspicious activity, and authentication events.
+        | Retained for 90 days for security audit purposes.
+        |
+        */
+
+        'security' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/security.log'),
+            'level' => 'info',
+            'days' => 90,
+            'replace_placeholders' => true,
+        ],
+
     ],
 
 ];

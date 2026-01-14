@@ -97,13 +97,13 @@ class ProfileController extends Controller
 
         // Delete old image if exists
         if ($user->profile->profile_image_path) {
-            Storage::disk('public')->delete($user->profile->profile_image_path);
+            Storage::disk('private')->delete($user->profile->profile_image_path);
         }
 
-        // Store new image
+        // Store new image on private disk
         $path = $request->file('image')->store(
             'profiles/'.$user->id,
-            'public'
+            'private'
         );
 
         $user->profile->update([
@@ -113,7 +113,11 @@ class ProfileController extends Controller
         return response()->json([
             'message' => 'Profile image uploaded successfully.',
             'profile_image_path' => $path,
-            'profile_image_url' => url('storage/'.$path),
+            'profile_image_url' => route('files.serve', [
+                'type' => 'profiles',
+                'id' => $user->id,
+                'filename' => basename($path),
+            ]),
         ]);
     }
 
@@ -130,7 +134,7 @@ class ProfileController extends Controller
             ], 404);
         }
 
-        Storage::disk('public')->delete($user->profile->profile_image_path);
+        Storage::disk('private')->delete($user->profile->profile_image_path);
 
         $user->profile->update([
             'profile_image_path' => null,

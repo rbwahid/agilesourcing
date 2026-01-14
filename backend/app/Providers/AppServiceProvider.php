@@ -4,10 +4,17 @@ namespace App\Providers;
 
 use App\Listeners\LogNotificationSent;
 use App\Listeners\StripeEventListener;
+use App\Models\Conversation;
+use App\Models\Design;
+use App\Models\Message;
+use App\Policies\ConversationPolicy;
+use App\Policies\DesignPolicy;
+use App\Policies\MessagePolicy;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\Events\NotificationSent;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Cashier\Events\WebhookReceived;
@@ -30,6 +37,17 @@ class AppServiceProvider extends ServiceProvider
         $this->configureRateLimiting();
         $this->registerStripeEventListeners();
         $this->registerNotificationListeners();
+        $this->registerPolicies();
+    }
+
+    /**
+     * Register authorization policies.
+     */
+    protected function registerPolicies(): void
+    {
+        Gate::policy(Design::class, DesignPolicy::class);
+        Gate::policy(Conversation::class, ConversationPolicy::class);
+        Gate::policy(Message::class, MessagePolicy::class);
     }
 
     /**

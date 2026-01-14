@@ -164,13 +164,13 @@ class SupplierController extends Controller
 
         // Delete old logo if exists
         if ($profile->profile_image_path) {
-            Storage::disk('public')->delete($profile->profile_image_path);
+            Storage::disk('private')->delete($profile->profile_image_path);
         }
 
-        // Store new logo
+        // Store new logo on private disk
         $path = $request->file('logo')->store(
-            'suppliers/'.$user->id.'/logo',
-            'public'
+            'profiles/'.$user->id,
+            'private'
         );
 
         $profile->update([
@@ -180,7 +180,11 @@ class SupplierController extends Controller
         return response()->json([
             'message' => 'Logo uploaded successfully.',
             'data' => [
-                'logo_url' => url('storage/'.$path),
+                'logo_url' => route('files.serve', [
+                    'type' => 'profiles',
+                    'id' => $user->id,
+                    'filename' => basename($path),
+                ]),
             ],
         ]);
     }

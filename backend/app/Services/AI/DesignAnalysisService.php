@@ -110,12 +110,12 @@ PROMPT;
     {
         $filePath = $design->file_path;
 
-        if (! Storage::disk('public')->exists($filePath)) {
+        if (! Storage::disk('private')->exists($filePath)) {
             throw new \Exception("Design file not found: {$filePath}");
         }
 
-        $content = Storage::disk('public')->get($filePath);
-        $mimeType = Storage::disk('public')->mimeType($filePath);
+        $content = Storage::disk('private')->get($filePath);
+        $mimeType = Storage::disk('private')->mimeType($filePath);
 
         return 'data:'.$mimeType.';base64,'.base64_encode($content);
     }

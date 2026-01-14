@@ -199,6 +199,16 @@ export default function RegisterPage() {
                   value: 8,
                   message: 'Password must be at least 8 characters',
                 },
+                validate: {
+                  hasLowercase: (value) =>
+                    /[a-z]/.test(value) || 'Password must contain a lowercase letter',
+                  hasUppercase: (value) =>
+                    /[A-Z]/.test(value) || 'Password must contain an uppercase letter',
+                  hasNumber: (value) =>
+                    /[0-9]/.test(value) || 'Password must contain a number',
+                  hasSpecial: (value) =>
+                    /[^a-zA-Z0-9]/.test(value) || 'Password must contain a special character',
+                },
               })}
             />
             <button

@@ -59,13 +59,13 @@ class ProductCatalogController extends Controller
             ], 404);
         }
 
-        // Process images
+        // Process images - store on private disk
         $imagePaths = [];
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 $path = $image->store(
-                    'suppliers/'.$user->id.'/catalog',
-                    'public'
+                    'catalog/'.$supplier->id,
+                    'private'
                 );
                 $imagePaths[] = $path;
             }
@@ -115,15 +115,15 @@ class ProductCatalogController extends Controller
         if ($request->hasFile('images')) {
             // Delete old images
             foreach ($item->images ?? [] as $oldPath) {
-                Storage::disk('public')->delete($oldPath);
+                Storage::disk('private')->delete($oldPath);
             }
 
-            // Store new images
+            // Store new images on private disk
             $imagePaths = [];
             foreach ($request->file('images') as $image) {
                 $path = $image->store(
-                    'suppliers/'.$user->id.'/catalog',
-                    'public'
+                    'catalog/'.$supplier->id,
+                    'private'
                 );
                 $imagePaths[] = $path;
             }
@@ -151,9 +151,9 @@ class ProductCatalogController extends Controller
             ], 403);
         }
 
-        // Delete images
+        // Delete images from private disk
         foreach ($item->images ?? [] as $path) {
-            Storage::disk('public')->delete($path);
+            Storage::disk('private')->delete($path);
         }
 
         $item->delete();

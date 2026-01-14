@@ -88,11 +88,15 @@ class MockupGeneratorService
             $imageUrl = $this->generateImage($prompt);
 
             // Download and store the image
-            $filePath = $this->downloadAndStoreImage($imageUrl, $design->user_id, $mockup->id);
+            $filePath = $this->downloadAndStoreImage($imageUrl, $design->id, $mockup->id);
 
             $mockup->update([
                 'file_path' => $filePath,
-                'file_url' => Storage::disk('public')->url($filePath),
+                'file_url' => route('files.serve', [
+                    'type' => 'mockups',
+                    'id' => $design->id,
+                    'filename' => basename($filePath),
+                ]),
                 'status' => 'completed',
             ]);
 
@@ -193,7 +197,7 @@ class MockupGeneratorService
     /**
      * Download image from URL and store it locally.
      */
-    private function downloadAndStoreImage(string $imageUrl, int $userId, int $mockupId): string
+    private function downloadAndStoreImage(string $imageUrl, int $designId, int $mockupId): string
     {
         $response = Http::timeout(30)->get($imageUrl);
 
@@ -202,9 +206,9 @@ class MockupGeneratorService
         }
 
         $filename = "mockup_{$mockupId}_".Str::random(8).'.png';
-        $path = "mockups/{$userId}/{$filename}";
+        $path = "mockups/{$designId}/{$filename}";
 
-        Storage::disk('public')->put($path, $response->body());
+        Storage::disk('private')->put($path, $response->body());
 
         return $path;
     }

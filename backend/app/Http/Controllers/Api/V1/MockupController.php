@@ -118,8 +118,8 @@ class MockupController extends Controller
         }
 
         // Delete the file if it exists
-        if ($mockup->file_path && Storage::disk('public')->exists($mockup->file_path)) {
-            Storage::disk('public')->delete($mockup->file_path);
+        if ($mockup->file_path && Storage::disk('private')->exists($mockup->file_path)) {
+            Storage::disk('private')->delete($mockup->file_path);
         }
 
         $mockup->delete();

@@ -56,10 +56,10 @@ class SupplierCertificationController extends Controller
             ], 422);
         }
 
-        // Store the certificate file
+        // Store the certificate file on private disk
         $path = $request->file('certificate_file')->store(
-            'suppliers/'.$user->id.'/certifications',
-            'public'
+            'certifications/'.$supplier->id,
+            'private'
         );
 
         $certification = $supplier->certificationRecords()->create([
@@ -89,7 +89,7 @@ class SupplierCertificationController extends Controller
 
         // Delete the certificate file
         if ($certification->certificate_path) {
-            Storage::disk('public')->delete($certification->certificate_path);
+            Storage::disk('private')->delete($certification->certificate_path);
         }
 
         $certification->delete();

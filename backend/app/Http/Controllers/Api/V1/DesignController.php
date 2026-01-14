@@ -41,19 +41,14 @@ class DesignController extends Controller
         $user = $request->user();
         $file = $request->file('design_file');
 
-        // Store file in user-specific directory
-        $path = $file->store(
-            'designs/'.$user->id,
-            'public'
-        );
-
+        // Create design record first (without file path)
         $design = $user->designs()->create([
             'title' => $request->title,
             'description' => $request->description,
             'category' => $request->category,
             'season' => $request->season,
             'target_demographic' => $request->target_demographic,
-            'file_path' => $path,
+            'file_path' => '', // Will be updated after storing file
             'file_type' => $file->getMimeType(),
             'original_filename' => $file->getClientOriginalName(),
             'file_size' => $file->getSize(),
@@ -61,12 +56,21 @@ class DesignController extends Controller
             'ai_analysis_status' => 'pending',
         ]);
 
+        // Store file in design-specific directory on private disk
+        $path = $file->store(
+            'designs/'.$design->id,
+            'private'
+        );
+
+        // Update design with file path
+        $design->update(['file_path' => $path]);
+
         // Dispatch AI analysis job
         AnalyzeDesignJob::dispatch($design);
 
         return response()->json([
             'message' => 'Design uploaded successfully.',
-            'data' => new DesignResource($design),
+            'data' => new DesignResource($design->fresh()),
         ], 201);
     }
 
@@ -117,13 +121,13 @@ class DesignController extends Controller
 
         // Delete file from storage
         if ($design->file_path) {
-            Storage::disk('public')->delete($design->file_path);
+            Storage::disk('private')->delete($design->file_path);
         }
 
         // Delete variation files
         foreach ($design->variations as $variation) {
             if ($variation->file_path) {
-                Storage::disk('public')->delete($variation->file_path);
+                Storage::disk('private')->delete($variation->file_path);
             }
         }
 
@@ -242,7 +246,7 @@ class DesignController extends Controller
         // Delete existing variations and their files
         foreach ($design->variations as $variation) {
             if ($variation->file_path) {
-                Storage::disk('public')->delete($variation->file_path);
+                Storage::disk('private')->delete($variation->file_path);
             }
             $variation->delete();
         }

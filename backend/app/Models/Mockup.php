@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Storage;
 
 class Mockup extends Model
 {
@@ -113,7 +112,7 @@ class Mockup extends Model
     }
 
     /**
-     * Get the file URL attribute with fallback to storage URL.
+     * Get the file URL attribute with fallback to private file route.
      */
     public function getFileUrlAttribute($value): ?string
     {
@@ -121,8 +120,12 @@ class Mockup extends Model
             return $value;
         }
 
-        if ($this->file_path) {
-            return Storage::disk('public')->url($this->file_path);
+        if ($this->file_path && $this->design_id) {
+            return route('files.serve', [
+                'type' => 'mockups',
+                'id' => $this->design_id,
+                'filename' => basename($this->file_path),
+            ]);
         }
 
         return null;

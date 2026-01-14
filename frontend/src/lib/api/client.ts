@@ -83,7 +83,8 @@ apiClient.interceptors.response.use(
           });
         }
         // Redirect to login page (only on client side)
-        if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+        // Use exact match to prevent matching paths like /login-attempt
+        if (typeof window !== 'undefined' && window.location.pathname !== '/login') {
           // Clear any stored auth state here if needed
           window.location.href = '/login';
         }

@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\BillingController;
 use App\Http\Controllers\Api\V1\ConversationController;
 use App\Http\Controllers\Api\V1\DesignController;
+use App\Http\Controllers\Api\V1\FileController;
 use App\Http\Controllers\Api\V1\InquiryController;
 use App\Http\Controllers\Api\V1\InstagramAuthController;
 use App\Http\Controllers\Api\V1\MessageController;
@@ -285,6 +286,18 @@ Route::middleware('auth:sanctum')->group(function () {
         // Billing & Invoices
         Route::get('/billing/invoices', [BillingController::class, 'invoices'])
             ->name('billing.invoices');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Private File Access Routes
+        |--------------------------------------------------------------------------
+        */
+        Route::get('/files/{type}/{id}/{filename}', [FileController::class, 'serve'])
+            ->name('files.serve')
+            ->where('filename', '.*');
+        Route::get('/files/{type}/{id}/{filename}/signed-url', [FileController::class, 'signedUrl'])
+            ->name('files.signed-url')
+            ->where('filename', '.*');
         Route::get('/billing/invoices/{id}/download', [BillingController::class, 'downloadInvoice'])
             ->name('billing.invoices.download');
         Route::get('/billing/upcoming', [BillingController::class, 'upcomingInvoice'])

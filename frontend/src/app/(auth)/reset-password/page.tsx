@@ -186,6 +186,16 @@ function ResetPasswordForm() {
                   value: 8,
                   message: 'Password must be at least 8 characters',
                 },
+                validate: {
+                  hasLowercase: (value) =>
+                    /[a-z]/.test(value) || 'Password must contain a lowercase letter',
+                  hasUppercase: (value) =>
+                    /[A-Z]/.test(value) || 'Password must contain an uppercase letter',
+                  hasNumber: (value) =>
+                    /[0-9]/.test(value) || 'Password must contain a number',
+                  hasSpecial: (value) =>
+                    /[^a-zA-Z0-9]/.test(value) || 'Password must contain a special character',
+                },
               })}
             />
             <button
@@ -206,7 +216,7 @@ function ResetPasswordForm() {
             </p>
           )}
           <p className="text-xs text-charcoal-light/70">
-            Must be at least 8 characters
+            Must be at least 8 characters with uppercase, lowercase, number, and special character
           </p>
         </div>
 

@@ -68,12 +68,17 @@ class MessageController extends Controller
             foreach ($request->file('attachments') as $file) {
                 $path = $file->store(
                     'messages/'.$conversation->id,
-                    'public'
+                    'private'
                 );
 
                 $attachments[] = [
                     'name' => $file->getClientOriginalName(),
-                    'url' => url('storage/'.$path),
+                    'path' => $path,
+                    'url' => route('files.serve', [
+                        'type' => 'messages',
+                        'id' => $conversation->id,
+                        'filename' => basename($path),
+                    ]),
                     'type' => $file->getMimeType(),
                     'size' => $file->getSize(),
                 ];
@@ -143,8 +148,9 @@ class MessageController extends Controller
         // Delete attachments
         if ($message->attachments) {
             foreach ($message->attachments as $attachment) {
-                $path = str_replace(url('storage/'), '', $attachment['url']);
-                Storage::disk('public')->delete($path);
+                if (isset($attachment['path'])) {
+                    Storage::disk('private')->delete($attachment['path']);
+                }
             }
         }
 
