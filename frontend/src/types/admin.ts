@@ -190,6 +190,119 @@ export interface AuditLogFilters {
   per_page?: number;
 }
 
+// Subscription Management Types
+
+export type StripeSubscriptionStatus = 'active' | 'trialing' | 'past_due' | 'canceled' | 'incomplete' | 'incomplete_expired' | 'unpaid';
+export type BillingPeriod = 'monthly' | 'annual';
+
+export interface AdminSubscription {
+  id: number;
+  stripe_id: string;
+  stripe_status: StripeSubscriptionStatus;
+  stripe_price: string;
+  billing_period: BillingPeriod;
+  trial_ends_at: string | null;
+  ends_at: string | null;
+  created_at: string;
+  user: {
+    id: number;
+    name: string;
+    email: string;
+    role: UserRole;
+  };
+  plan: {
+    id: number;
+    name: string;
+    slug: string;
+  } | null;
+  amount: number; // Monthly amount in cents
+}
+
+export interface AdminSubscriptionInvoice {
+  id: string;
+  number: string;
+  amount_due: number;
+  amount_paid: number;
+  currency: string;
+  status: string;
+  created: string;
+  invoice_pdf: string | null;
+  hosted_invoice_url: string | null;
+}
+
+export interface AdminSubscriptionDetail extends AdminSubscription {
+  updated_at: string;
+  on_trial: boolean;
+  on_grace_period: boolean;
+  cancelled: boolean;
+  user: {
+    id: number;
+    name: string;
+    email: string;
+    role: UserRole;
+    is_active: boolean;
+    created_at: string;
+  };
+  plan: {
+    id: number;
+    name: string;
+    slug: string;
+    price_monthly: number;
+    price_annual: number;
+  } | null;
+  invoices: AdminSubscriptionInvoice[];
+}
+
+export interface SubscriptionFilters {
+  search?: string;
+  status?: StripeSubscriptionStatus;
+  plan?: string;
+  billing_period?: BillingPeriod;
+  sort?: 'created_at' | 'stripe_status';
+  direction?: 'asc' | 'desc';
+  page?: number;
+  per_page?: number;
+}
+
+export interface RefundRequest {
+  amount?: number; // In cents, optional for full refund
+  reason: string;
+}
+
+export interface RefundResponse {
+  refund_id: string;
+  amount: number;
+  status: string;
+}
+
+// Communication Log Types
+
+export type CommunicationType = 'email' | 'notification';
+export type CommunicationStatus = 'sent' | 'failed' | 'pending';
+
+export interface CommunicationLog {
+  id: number;
+  user_id: number;
+  type: CommunicationType;
+  channel: string;
+  subject: string;
+  content: string | null;
+  status: CommunicationStatus;
+  metadata: Record<string, unknown> | null;
+  triggered_by: {
+    id: number;
+    name: string;
+  } | null;
+  created_at: string;
+}
+
+export interface CommunicationLogFilters {
+  type?: CommunicationType;
+  status?: CommunicationStatus;
+  page?: number;
+  per_page?: number;
+}
+
 // Paginated Response
 
 export interface PaginatedResponse<T> {

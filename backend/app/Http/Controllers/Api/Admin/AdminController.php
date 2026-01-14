@@ -3,14 +3,21 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\RefundRequest;
 use App\Http\Requests\Admin\UpdateUserRequest;
+use App\Http\Resources\Admin\AdminSubscriptionDetailResource;
+use App\Http\Resources\Admin\AdminSubscriptionResource;
 use App\Http\Resources\Admin\AdminUserDetailResource;
 use App\Http\Resources\Admin\AdminUserResource;
+use App\Models\CommunicationLog;
+use App\Models\Plan;
 use App\Models\User;
 use App\Services\Admin\AdminStatsService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Laravel\Cashier\Subscription;
 use Spatie\Activitylog\Models\Activity;
+use Stripe\Stripe;
 
 class AdminController extends Controller
 {
@@ -229,6 +236,244 @@ class AdminController extends Controller
         }
         if ($to = $request->input('to')) {
             $query->whereDate('created_at', '<=', $to);
+        }
+
+        $logs = $query->paginate($request->input('per_page', 20));
+
+        return response()->json([
+            'data' => $logs->items(),
+            'meta' => [
+                'current_page' => $logs->currentPage(),
+                'last_page' => $logs->lastPage(),
+                'per_page' => $logs->perPage(),
+                'total' => $logs->total(),
+            ],
+        ]);
+    }
+
+    /**
+     * List all subscriptions with filters and pagination.
+     */
+    public function subscriptions(Request $request): JsonResponse
+    {
+        $query = Subscription::with('user')
+            ->where('type', 'default');
+
+        // Search by user name or email
+        if ($search = $request->input('search')) {
+            $query->whereHas('user', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by status
+        if ($status = $request->input('status')) {
+            $query->where('stripe_status', $status);
+        }
+
+        // Filter by plan
+        if ($planSlug = $request->input('plan')) {
+            $plan = Plan::where('slug', $planSlug)->first();
+            if ($plan) {
+                $query->where(function ($q) use ($plan) {
+                    $q->where('stripe_price', $plan->stripe_price_monthly_id)
+                        ->orWhere('stripe_price', $plan->stripe_price_annual_id);
+                });
+            }
+        }
+
+        // Filter by billing period
+        if ($billingPeriod = $request->input('billing_period')) {
+            $monthlyPrices = Plan::whereNotNull('stripe_price_monthly_id')
+                ->pluck('stripe_price_monthly_id');
+            $annualPrices = Plan::whereNotNull('stripe_price_annual_id')
+                ->pluck('stripe_price_annual_id');
+
+            if ($billingPeriod === 'monthly') {
+                $query->whereIn('stripe_price', $monthlyPrices);
+            } elseif ($billingPeriod === 'annual') {
+                $query->whereIn('stripe_price', $annualPrices);
+            }
+        }
+
+        // Sort
+        $sortField = $request->input('sort', 'created_at');
+        $sortDirection = $request->input('direction', 'desc');
+        $allowedSorts = ['created_at', 'stripe_status'];
+
+        if (in_array($sortField, $allowedSorts)) {
+            $query->orderBy($sortField, $sortDirection);
+        }
+
+        $subscriptions = $query->paginate($request->input('per_page', 15));
+
+        return response()->json([
+            'data' => AdminSubscriptionResource::collection($subscriptions),
+            'meta' => [
+                'current_page' => $subscriptions->currentPage(),
+                'last_page' => $subscriptions->lastPage(),
+                'per_page' => $subscriptions->perPage(),
+                'total' => $subscriptions->total(),
+            ],
+        ]);
+    }
+
+    /**
+     * Get single subscription details.
+     */
+    public function showSubscription(Subscription $subscription): JsonResponse
+    {
+        $subscription->load('user');
+
+        return response()->json([
+            'data' => new AdminSubscriptionDetailResource($subscription),
+        ]);
+    }
+
+    /**
+     * Retry a failed payment for a subscription.
+     */
+    public function retryPayment(Request $request, Subscription $subscription): JsonResponse
+    {
+        // Only allow retry for past_due subscriptions
+        if ($subscription->stripe_status !== 'past_due') {
+            return response()->json([
+                'message' => 'Payment retry is only available for past due subscriptions.',
+            ], 422);
+        }
+
+        try {
+            Stripe::setApiKey(config('cashier.secret'));
+
+            // Get the latest invoice for this subscription
+            $stripeSubscription = \Stripe\Subscription::retrieve($subscription->stripe_id);
+            $latestInvoiceId = $stripeSubscription->latest_invoice;
+
+            if ($latestInvoiceId) {
+                $invoice = \Stripe\Invoice::retrieve($latestInvoiceId);
+
+                // Only retry if the invoice is open or uncollectible
+                if (in_array($invoice->status, ['open', 'uncollectible'])) {
+                    $invoice->pay();
+                }
+            }
+
+            activity()
+                ->causedBy($request->user())
+                ->performedOn($subscription->user)
+                ->withProperties(['subscription_id' => $subscription->id])
+                ->log('Retried subscription payment');
+
+            return response()->json([
+                'message' => 'Payment retry initiated successfully.',
+            ]);
+        } catch (\Stripe\Exception\CardException $e) {
+            return response()->json([
+                'message' => 'Payment failed: '.$e->getMessage(),
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to retry payment: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Create a refund for an invoice.
+     */
+    public function createRefund(RefundRequest $request, string $invoiceId): JsonResponse
+    {
+        try {
+            Stripe::setApiKey(config('cashier.secret'));
+
+            // Retrieve the invoice
+            $invoice = \Stripe\Invoice::retrieve($invoiceId);
+
+            if ($invoice->status !== 'paid') {
+                return response()->json([
+                    'message' => 'Can only refund paid invoices.',
+                ], 422);
+            }
+
+            // Get the charge ID from the invoice
+            $chargeId = $invoice->charge;
+
+            if (! $chargeId) {
+                return response()->json([
+                    'message' => 'No charge found for this invoice.',
+                ], 422);
+            }
+
+            // Create the refund
+            $refundParams = [
+                'charge' => $chargeId,
+                'reason' => 'requested_by_customer',
+                'metadata' => [
+                    'admin_id' => $request->user()->id,
+                    'admin_reason' => $request->input('reason'),
+                ],
+            ];
+
+            // If amount is specified, create partial refund
+            if ($amount = $request->input('amount')) {
+                $refundParams['amount'] = $amount;
+            }
+
+            $refund = \Stripe\Refund::create($refundParams);
+
+            // Find the user associated with this invoice
+            $user = User::where('stripe_id', $invoice->customer)->first();
+
+            if ($user) {
+                activity()
+                    ->causedBy($request->user())
+                    ->performedOn($user)
+                    ->withProperties([
+                        'invoice_id' => $invoiceId,
+                        'refund_id' => $refund->id,
+                        'amount' => $refund->amount,
+                        'reason' => $request->input('reason'),
+                    ])
+                    ->log('Created refund');
+            }
+
+            return response()->json([
+                'message' => 'Refund processed successfully.',
+                'data' => [
+                    'refund_id' => $refund->id,
+                    'amount' => $refund->amount,
+                    'status' => $refund->status,
+                ],
+            ]);
+        } catch (\Stripe\Exception\InvalidRequestException $e) {
+            return response()->json([
+                'message' => 'Invalid request: '.$e->getMessage(),
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to process refund: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Get communication logs for a specific user.
+     */
+    public function userCommunications(Request $request, User $user): JsonResponse
+    {
+        $query = CommunicationLog::where('user_id', $user->id)
+            ->with('triggeredBy:id,name')
+            ->latest();
+
+        // Filter by type
+        if ($type = $request->input('type')) {
+            $query->where('type', $type);
+        }
+
+        // Filter by status
+        if ($status = $request->input('status')) {
+            $query->where('status', $status);
         }
 
         $logs = $query->paginate($request->input('per_page', 20));

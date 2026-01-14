@@ -17,12 +17,20 @@ import {
   approveVerification,
   rejectVerification,
   getAuditLogs,
+  getAdminSubscriptions,
+  getAdminSubscription,
+  retrySubscriptionPayment,
+  createRefund,
+  getUserCommunications,
 } from '@/lib/api/admin';
 import type {
   UserFilters,
   UpdateUserData,
   VerificationFilters,
   AuditLogFilters,
+  SubscriptionFilters,
+  RefundRequest,
+  CommunicationLogFilters,
 } from '@/types/admin';
 
 // ============================================================================
@@ -37,12 +45,18 @@ export const adminKeys = {
   users: () => [...adminKeys.all, 'users'] as const,
   usersList: (filters: UserFilters) => [...adminKeys.users(), 'list', filters] as const,
   user: (id: number) => [...adminKeys.users(), 'detail', id] as const,
+  userCommunications: (userId: number, filters: CommunicationLogFilters) =>
+    [...adminKeys.users(), userId, 'communications', filters] as const,
   verifications: () => [...adminKeys.all, 'verifications'] as const,
   verificationsList: (filters: VerificationFilters) =>
     [...adminKeys.verifications(), 'list', filters] as const,
   verificationTypes: () => [...adminKeys.verifications(), 'types'] as const,
   verification: (id: number) => [...adminKeys.verifications(), 'detail', id] as const,
   auditLogs: (filters: AuditLogFilters) => [...adminKeys.all, 'audit-logs', filters] as const,
+  subscriptions: () => [...adminKeys.all, 'subscriptions'] as const,
+  subscriptionsList: (filters: SubscriptionFilters) =>
+    [...adminKeys.subscriptions(), 'list', filters] as const,
+  subscription: (id: number) => [...adminKeys.subscriptions(), 'detail', id] as const,
 };
 
 // ============================================================================
@@ -255,6 +269,86 @@ export function useAuditLogs(filters: AuditLogFilters = {}) {
   return useQuery({
     queryKey: adminKeys.auditLogs(filters),
     queryFn: () => getAuditLogs(filters),
+    staleTime: 30 * 1000,
+  });
+}
+
+// ============================================================================
+// Subscription Management Hooks
+// ============================================================================
+
+/**
+ * Fetch paginated subscriptions list with filters.
+ */
+export function useAdminSubscriptions(filters: SubscriptionFilters = {}) {
+  return useQuery({
+    queryKey: adminKeys.subscriptionsList(filters),
+    queryFn: () => getAdminSubscriptions(filters),
+    staleTime: 30 * 1000,
+  });
+}
+
+/**
+ * Fetch single subscription details with invoices.
+ */
+export function useAdminSubscription(id: number) {
+  return useQuery({
+    queryKey: adminKeys.subscription(id),
+    queryFn: () => getAdminSubscription(id),
+    enabled: !!id,
+  });
+}
+
+/**
+ * Retry payment mutation for past_due subscriptions.
+ */
+export function useRetryPayment() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: retrySubscriptionPayment,
+    onSuccess: (_, subscriptionId) => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.subscriptions() });
+      queryClient.invalidateQueries({ queryKey: adminKeys.subscription(subscriptionId) });
+      toast.success('Payment retry initiated successfully');
+    },
+    onError: () => {
+      toast.error('Failed to retry payment');
+    },
+  });
+}
+
+/**
+ * Create refund mutation.
+ */
+export function useCreateRefund() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ invoiceId, data }: { invoiceId: string; data: RefundRequest }) =>
+      createRefund(invoiceId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.subscriptions() });
+      toast.success('Refund processed successfully');
+    },
+    onError: () => {
+      toast.error('Failed to process refund');
+    },
+  });
+}
+
+// ============================================================================
+// Customer Support Hooks
+// ============================================================================
+
+/**
+ * Fetch communication logs for a user.
+ */
+export function useUserCommunications(userId: number, filters: CommunicationLogFilters = {}) {
+  return useQuery({
+    queryKey: adminKeys.userCommunications(userId, filters),
+    queryFn: () => getUserCommunications(userId, filters),
+    enabled: !!userId,
     staleTime: 30 * 1000,
   });
 }
