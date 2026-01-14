@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Listeners\LogNotificationSent;
 use App\Listeners\StripeEventListener;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\Events\NotificationSent;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
@@ -27,6 +29,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->configureRateLimiting();
         $this->registerStripeEventListeners();
+        $this->registerNotificationListeners();
     }
 
     /**
@@ -35,6 +38,14 @@ class AppServiceProvider extends ServiceProvider
     protected function registerStripeEventListeners(): void
     {
         Event::listen(WebhookReceived::class, StripeEventListener::class);
+    }
+
+    /**
+     * Register notification event listeners for logging.
+     */
+    protected function registerNotificationListeners(): void
+    {
+        Event::listen(NotificationSent::class, LogNotificationSent::class);
     }
 
     /**

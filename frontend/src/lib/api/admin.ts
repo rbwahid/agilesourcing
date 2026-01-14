@@ -12,6 +12,13 @@ import type {
   AuditLog,
   AuditLogFilters,
   PaginatedResponse,
+  AdminSubscription,
+  AdminSubscriptionDetail,
+  SubscriptionFilters,
+  RefundRequest,
+  RefundResponse,
+  CommunicationLog,
+  CommunicationLogFilters,
 } from '@/types/admin';
 
 // ============================================================================
@@ -169,5 +176,71 @@ export async function getAuditLogs(
   const response = await apiClient.get<PaginatedResponse<AuditLog>>('/v1/admin/audit-logs', {
     params: filters,
   });
+  return response.data;
+}
+
+// ============================================================================
+// Subscription Management
+// ============================================================================
+
+/**
+ * Get paginated list of subscriptions with filters.
+ */
+export async function getAdminSubscriptions(
+  filters: SubscriptionFilters = {}
+): Promise<PaginatedResponse<AdminSubscription>> {
+  const response = await apiClient.get<PaginatedResponse<AdminSubscription>>(
+    '/v1/admin/subscriptions',
+    { params: filters }
+  );
+  return response.data;
+}
+
+/**
+ * Get detailed subscription information including invoices.
+ */
+export async function getAdminSubscription(id: number): Promise<AdminSubscriptionDetail> {
+  const response = await apiClient.get<{ data: AdminSubscriptionDetail }>(
+    `/v1/admin/subscriptions/${id}`
+  );
+  return response.data.data;
+}
+
+/**
+ * Retry a failed payment for a subscription.
+ */
+export async function retrySubscriptionPayment(subscriptionId: number): Promise<void> {
+  await apiClient.post(`/v1/admin/subscriptions/${subscriptionId}/retry`);
+}
+
+/**
+ * Create a refund for an invoice.
+ */
+export async function createRefund(
+  invoiceId: string,
+  data: RefundRequest
+): Promise<RefundResponse> {
+  const response = await apiClient.post<{ data: RefundResponse; message: string }>(
+    `/v1/admin/invoices/${invoiceId}/refund`,
+    data
+  );
+  return response.data.data;
+}
+
+// ============================================================================
+// Customer Support
+// ============================================================================
+
+/**
+ * Get communication logs for a specific user.
+ */
+export async function getUserCommunications(
+  userId: number,
+  filters: CommunicationLogFilters = {}
+): Promise<PaginatedResponse<CommunicationLog>> {
+  const response = await apiClient.get<PaginatedResponse<CommunicationLog>>(
+    `/v1/admin/users/${userId}/communications`,
+    { params: filters }
+  );
   return response.data;
 }

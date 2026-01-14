@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useAdminUser, useSuspendUser, useReactivateUser } from '@/lib/hooks/use-admin';
+import { useAdminUser, useSuspendUser, useReactivateUser, useUserCommunications } from '@/lib/hooks/use-admin';
 import {
   UserDetailCard,
   UserStatsCard,
@@ -19,6 +19,7 @@ import {
   UserActivityCard,
   SuspendUserDialog,
   ReactivateUserDialog,
+  CommunicationLogCard,
 } from '@/components/admin';
 import Link from 'next/link';
 
@@ -28,6 +29,7 @@ export default function UserDetailPage() {
   const userId = Number(params.id);
 
   const { data: user, isLoading } = useAdminUser(userId);
+  const { data: communications, isLoading: communicationsLoading } = useUserCommunications(userId);
   const suspendMutation = useSuspendUser();
   const reactivateMutation = useReactivateUser();
 
@@ -111,6 +113,10 @@ export default function UserDetailPage() {
         <div className="space-y-6">
           <UserStatsCard user={user} isLoading={isLoading} />
           <UserSubscriptionCard user={user} isLoading={isLoading} />
+          <CommunicationLogCard
+            logs={communications?.data ?? []}
+            isLoading={communicationsLoading}
+          />
         </div>
       </div>
 

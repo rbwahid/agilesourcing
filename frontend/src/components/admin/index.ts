@@ -16,3 +16,15 @@ export { SuspendUserDialog, ReactivateUserDialog } from './suspend-user-dialog';
 export { VerificationQueueTable } from './verification-queue-table';
 export { VerificationDetailCard } from './verification-detail-card';
 export { VerificationActions } from './verification-actions';
+
+// Subscription Management Components
+export { SubscriptionsDataTable } from './subscriptions-data-table';
+export { SubscriptionFilters } from './subscription-filters';
+export { SubscriptionDetailCard } from './subscription-detail-card';
+export { SubscriptionInvoicesCard } from './subscription-invoices-card';
+export { RefundDialog } from './refund-dialog';
+export { RetryPaymentDialog } from './retry-payment-dialog';
+
+// Customer Support Components
+export { CommunicationLogCard } from './communication-log-card';
+export { UserLookupWidget } from './user-lookup-widget';

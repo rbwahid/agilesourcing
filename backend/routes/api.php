@@ -331,6 +331,20 @@ Route::middleware('auth:sanctum')->group(function () {
             // Audit Logs
             Route::get('/audit-logs', [\App\Http\Controllers\Api\Admin\AdminController::class, 'auditLogs'])
                 ->name('audit-logs');
+
+            // Subscription Management
+            Route::get('/subscriptions', [\App\Http\Controllers\Api\Admin\AdminController::class, 'subscriptions'])
+                ->name('subscriptions.index');
+            Route::get('/subscriptions/{subscription}', [\App\Http\Controllers\Api\Admin\AdminController::class, 'showSubscription'])
+                ->name('subscriptions.show');
+            Route::post('/subscriptions/{subscription}/retry', [\App\Http\Controllers\Api\Admin\AdminController::class, 'retryPayment'])
+                ->name('subscriptions.retry');
+            Route::post('/invoices/{invoice}/refund', [\App\Http\Controllers\Api\Admin\AdminController::class, 'createRefund'])
+                ->name('invoices.refund');
+
+            // User Support
+            Route::get('/users/{user}/communications', [\App\Http\Controllers\Api\Admin\AdminController::class, 'userCommunications'])
+                ->name('users.communications');
         });
     });
 });
