@@ -38,7 +38,7 @@ class InstagramService
             'state' => $state,
         ];
 
-        return 'https://www.facebook.com/' . config('services.instagram.graph_version') . '/dialog/oauth?' . http_build_query($params);
+        return 'https://www.facebook.com/'.config('services.instagram.graph_version').'/dialog/oauth?'.http_build_query($params);
     }
 
     /**
@@ -57,7 +57,7 @@ class InstagramService
             Log::error('Instagram token exchange failed', [
                 'error' => $response->json(),
             ]);
-            throw new \Exception('Failed to exchange code for token: ' . ($response->json('error.message') ?? 'Unknown error'));
+            throw new \Exception('Failed to exchange code for token: '.($response->json('error.message') ?? 'Unknown error'));
         }
 
         $data = $response->json();
@@ -111,6 +111,7 @@ class InstagramService
                     'connection_id' => $connection->id,
                     'error' => $response->json(),
                 ]);
+
                 return false;
             }
 
@@ -132,6 +133,7 @@ class InstagramService
                 'connection_id' => $connection->id,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -312,6 +314,7 @@ class InstagramService
                 'media_id' => $mediaId,
                 'error' => $response->json(),
             ]);
+
             return $this->getFallbackMetrics($accessToken, $mediaId);
         }
 
@@ -368,7 +371,7 @@ class InstagramService
      */
     private function graphRequest(): PendingRequest
     {
-        return Http::baseUrl(self::GRAPH_URL . '/' . config('services.instagram.graph_version'))
+        return Http::baseUrl(self::GRAPH_URL.'/'.config('services.instagram.graph_version'))
             ->timeout(30);
     }
 }

@@ -18,11 +18,11 @@ class ProductCatalogItemFactory extends Factory
             'description' => fake()->optional()->paragraph(),
             'category' => fake()->randomElement(['cotton', 'silk', 'wool', 'polyester', 'linen', 'denim']),
             'images' => [
-                'products/' . fake()->uuid() . '.jpg',
+                'products/'.fake()->uuid().'.jpg',
             ],
             'specifications' => [
-                'weight' => fake()->numberBetween(100, 500) . 'gsm',
-                'width' => fake()->numberBetween(100, 180) . 'cm',
+                'weight' => fake()->numberBetween(100, 500).'gsm',
+                'width' => fake()->numberBetween(100, 180).'cm',
             ],
             'is_active' => true,
         ];

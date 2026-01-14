@@ -131,7 +131,7 @@ class MockupGeneratorService
         $targetAudience = $analysis['target_audience'] ?? '';
 
         $prompt = "Professional high-fashion photography of {$modelDesc}, {$poseDesc}, {$bgDesc}. ";
-        $prompt .= "The model is wearing a fashion garment with the following characteristics: ";
+        $prompt .= 'The model is wearing a fashion garment with the following characteristics: ';
         $prompt .= "{$design->title}. ";
 
         if ($design->description) {
@@ -154,8 +154,8 @@ class MockupGeneratorService
             $prompt .= "Season: {$design->season}. ";
         }
 
-        $prompt .= "Shot in editorial style with natural lighting, fashion magazine quality, ";
-        $prompt .= "high resolution, professional photography, no text or watermarks.";
+        $prompt .= 'Shot in editorial style with natural lighting, fashion magazine quality, ';
+        $prompt .= 'high resolution, professional photography, no text or watermarks.';
 
         return $prompt;
     }
@@ -201,7 +201,7 @@ class MockupGeneratorService
             throw new \Exception('Failed to download generated image');
         }
 
-        $filename = "mockup_{$mockupId}_" . Str::random(8) . '.png';
+        $filename = "mockup_{$mockupId}_".Str::random(8).'.png';
         $path = "mockups/{$userId}/{$filename}";
 
         Storage::disk('public')->put($path, $response->body());

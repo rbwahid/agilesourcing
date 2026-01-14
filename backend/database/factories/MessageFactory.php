@@ -33,7 +33,7 @@ class MessageFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'attachments' => [
-                'attachments/' . fake()->uuid() . '.pdf',
+                'attachments/'.fake()->uuid().'.pdf',
             ],
         ]);
     }

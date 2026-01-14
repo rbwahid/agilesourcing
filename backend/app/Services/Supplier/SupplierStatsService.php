@@ -3,12 +3,10 @@
 namespace App\Services\Supplier;
 
 use App\Models\Conversation;
-use App\Models\Inquiry;
 use App\Models\Profile;
 use App\Models\Supplier;
 use App\Models\SupplierProfileView;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -239,18 +237,18 @@ class SupplierStatsService
             $q->where('user_id', $supplier->id);
         })->first();
 
-        if (!$profile || !$supplierModel) {
+        if (! $profile || ! $supplierModel) {
             return 0;
         }
 
         $fields = [
-            'business_name' => !empty($profile->business_name),
-            'logo' => !empty($profile->profile_picture_url),
-            'bio' => !empty($profile->bio),
-            'location' => !empty($profile->location),
-            'service_type' => !empty($supplierModel->service_type),
-            'moq' => !empty($supplierModel->minimum_order_quantity),
-            'lead_time' => !empty($supplierModel->lead_time_days),
+            'business_name' => ! empty($profile->business_name),
+            'logo' => ! empty($profile->profile_picture_url),
+            'bio' => ! empty($profile->bio),
+            'location' => ! empty($profile->location),
+            'service_type' => ! empty($supplierModel->service_type),
+            'moq' => ! empty($supplierModel->minimum_order_quantity),
+            'lead_time' => ! empty($supplierModel->lead_time_days),
             'certifications' => $supplierModel->certificationRecords()->count() > 0,
         ];
 
@@ -267,7 +265,7 @@ class SupplierStatsService
     {
         $conversations = Conversation::where('supplier_id', $supplier->id)
             ->where('created_at', '>=', now()->subDays(30))
-            ->with(['messages' => function ($q) use ($supplier) {
+            ->with(['messages' => function ($q) {
                 $q->orderBy('created_at', 'asc');
             }])
             ->get();
@@ -284,7 +282,7 @@ class SupplierStatsService
             $messages = $conversation->messages;
             $firstMessage = $messages->first();
 
-            if (!$firstMessage || $firstMessage->sender_id === $supplier->id) {
+            if (! $firstMessage || $firstMessage->sender_id === $supplier->id) {
                 continue;
             }
 

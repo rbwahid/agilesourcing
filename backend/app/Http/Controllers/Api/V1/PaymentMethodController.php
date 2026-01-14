@@ -17,7 +17,7 @@ class PaymentMethodController extends Controller
         $user = $request->user();
 
         // Ensure user has a Stripe customer
-        if (!$user->stripe_id) {
+        if (! $user->stripe_id) {
             return response()->json([
                 'data' => [],
             ]);
@@ -65,7 +65,7 @@ class PaymentMethodController extends Controller
             ]);
         } catch (\Exception $e) {
             throw ValidationException::withMessages([
-                'payment_method' => ['Failed to create setup intent: ' . $e->getMessage()],
+                'payment_method' => ['Failed to create setup intent: '.$e->getMessage()],
             ]);
         }
     }
@@ -87,7 +87,7 @@ class PaymentMethodController extends Controller
             $paymentMethod = $user->addPaymentMethod($validated['payment_method_id']);
 
             // Set as default if requested or if it's the only payment method
-            if ($validated['set_as_default'] ?? false || !$user->hasDefaultPaymentMethod()) {
+            if ($validated['set_as_default'] ?? false || ! $user->hasDefaultPaymentMethod()) {
                 $user->updateDefaultPaymentMethod($validated['payment_method_id']);
             }
 
@@ -104,7 +104,7 @@ class PaymentMethodController extends Controller
             ], 201);
         } catch (\Exception $e) {
             throw ValidationException::withMessages([
-                'payment_method_id' => ['Failed to add payment method: ' . $e->getMessage()],
+                'payment_method_id' => ['Failed to add payment method: '.$e->getMessage()],
             ]);
         }
     }
@@ -128,7 +128,7 @@ class PaymentMethodController extends Controller
             ]);
         } catch (\Exception $e) {
             throw ValidationException::withMessages([
-                'payment_method_id' => ['Failed to set default payment method: ' . $e->getMessage()],
+                'payment_method_id' => ['Failed to set default payment method: '.$e->getMessage()],
             ]);
         }
     }
@@ -153,7 +153,7 @@ class PaymentMethodController extends Controller
             // Find and delete the payment method
             $paymentMethod = $user->findPaymentMethod($id);
 
-            if (!$paymentMethod) {
+            if (! $paymentMethod) {
                 return response()->json([
                     'message' => 'Payment method not found.',
                 ], 404);
@@ -168,7 +168,7 @@ class PaymentMethodController extends Controller
             throw $e;
         } catch (\Exception $e) {
             throw ValidationException::withMessages([
-                'payment_method' => ['Failed to remove payment method: ' . $e->getMessage()],
+                'payment_method' => ['Failed to remove payment method: '.$e->getMessage()],
             ]);
         }
     }

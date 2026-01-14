@@ -26,7 +26,7 @@ class SubscriptionRequest extends FormRequest
 
         // Payment method is required when creating a new subscription
         // (not required when just changing plans with existing payment method)
-        if ($this->isMethod('POST') && !$this->user()->hasDefaultPaymentMethod()) {
+        if ($this->isMethod('POST') && ! $this->user()->hasDefaultPaymentMethod()) {
             $rules['payment_method_id'] = ['required', 'string'];
         } else {
             $rules['payment_method_id'] = ['nullable', 'string'];

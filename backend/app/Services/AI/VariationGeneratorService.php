@@ -6,7 +6,6 @@ use App\Models\Design;
 use App\Models\DesignVariation;
 use Gemini\Laravel\Facades\Gemini;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
 class VariationGeneratorService
 {

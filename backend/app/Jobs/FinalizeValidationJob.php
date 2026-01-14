@@ -135,6 +135,7 @@ class FinalizeValidationJob implements ShouldQueue
         if ($completedValidations->count() < 2) {
             // Only one validation, so it wins by default
             $this->validation->update(['is_winner' => true]);
+
             return;
         }
 
@@ -159,8 +160,8 @@ class FinalizeValidationJob implements ShouldQueue
     {
         return [
             'finalize-validation',
-            'validation:' . $this->validation->id,
-            'design:' . $this->validation->design_id,
+            'validation:'.$this->validation->id,
+            'design:'.$this->validation->design_id,
         ];
     }
 }

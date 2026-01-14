@@ -16,7 +16,7 @@ class PlanFactory extends Factory
 
         return [
             'name' => $name,
-            'slug' => Str::slug($name . '-' . fake()->randomElement(['designer', 'supplier'])),
+            'slug' => Str::slug($name.'-'.fake()->randomElement(['designer', 'supplier'])),
             'user_type' => fake()->randomElement(['designer', 'supplier']),
             'price_monthly' => fake()->randomFloat(2, 10, 200),
             'price_annual' => fake()->randomFloat(2, 100, 2000),

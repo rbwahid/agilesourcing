@@ -107,7 +107,13 @@ export function SupplierStatsOverview() {
     );
   }
 
-  const profileCompletion = stats.profile_completion_percentage || 0;
+  const profileCompletion = stats.profile_completion || 0;
+
+  // Helper to convert change number to trend object
+  const getTrend = (change: number | undefined) => {
+    if (change === undefined || change === 0) return undefined;
+    return { value: Math.abs(change), isPositive: change > 0 };
+  };
 
   return (
     <div className="space-y-6">
@@ -117,7 +123,7 @@ export function SupplierStatsOverview() {
           title="Profile Views"
           value={stats.profile_views?.toLocaleString() || '0'}
           icon={Eye}
-          trend={stats.profile_views_trend}
+          trend={getTrend(stats.profile_views_change)}
           iconBg="bg-blue-100"
           iconColor="text-blue-600"
         />
@@ -125,21 +131,21 @@ export function SupplierStatsOverview() {
           title="Inquiries"
           value={stats.inquiries_received?.toLocaleString() || '0'}
           icon={MessageSquare}
-          trend={stats.inquiries_trend}
+          trend={getTrend(stats.inquiries_change)}
           iconBg="bg-agile-teal/10"
           iconColor="text-agile-teal"
         />
         <StatCard
           title="Saved by Designers"
-          value={stats.saved_count?.toLocaleString() || '0'}
+          value={stats.saved_by_designers?.toLocaleString() || '0'}
           icon={Heart}
-          trend={stats.saved_trend}
+          trend={getTrend(stats.saved_change)}
           iconBg="bg-rose-100"
           iconColor="text-rose-500"
         />
         <StatCard
-          title="Catalog Items"
-          value={stats.catalog_items_count?.toLocaleString() || '0'}
+          title="Profile Score"
+          value={`${profileCompletion}%`}
           icon={Package}
           iconBg="bg-violet-100"
           iconColor="text-violet-600"
@@ -174,21 +180,13 @@ export function SupplierStatsOverview() {
           </div>
 
           {profileCompletion < 100 && (
-            <div className="mt-4 space-y-2">
-              <p className="text-xs font-medium text-gray-500">
-                Complete these to improve visibility:
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {stats.missing_fields?.map((field: string) => (
-                  <span
-                    key={field}
-                    className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs text-amber-700"
-                  >
-                    <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
-                    {field}
-                  </span>
-                ))}
-              </div>
+            <div className="mt-4">
+              <Button asChild size="sm" className="gap-2 bg-agile-teal hover:bg-agile-teal/90">
+                <Link href="/supplier-profile">
+                  Complete Profile
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </Button>
             </div>
           )}
 

@@ -94,8 +94,8 @@ class GenerateMockupJob implements ShouldQueue
     {
         return [
             'mockup-generation',
-            'mockup:' . $this->mockup->id,
-            'design:' . $this->mockup->design_id,
+            'mockup:'.$this->mockup->id,
+            'design:'.$this->mockup->design_id,
         ];
     }
 }

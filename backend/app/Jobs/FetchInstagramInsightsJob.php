@@ -52,6 +52,7 @@ class FetchInstagramInsightsJob implements ShouldQueue
                 'validation_id' => $this->validation->id,
                 'status' => $this->validation->status,
             ]);
+
             return;
         }
 
@@ -141,7 +142,7 @@ class FetchInstagramInsightsJob implements ShouldQueue
     {
         return [
             'instagram-insights',
-            'validation:' . $this->validation->id,
+            'validation:'.$this->validation->id,
         ];
     }
 }

@@ -23,7 +23,7 @@ return new class extends Migration
                 'BSCI',
                 'WRAP',
                 'SA8000',
-                'OTHER'
+                'OTHER',
             ]);
             $table->string('certificate_path');
             $table->date('expiry_date')->nullable();

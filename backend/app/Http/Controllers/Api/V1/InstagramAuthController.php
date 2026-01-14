@@ -109,9 +109,10 @@ class InstagramAuthController extends Controller
 
             // Redirect to frontend settings page with success
             $frontendUrl = config('app.frontend_url', 'http://localhost:3000');
+
             return response()->json([
                 'message' => 'Instagram connected successfully.',
-                'redirect_url' => $frontendUrl . '/settings?instagram=connected',
+                'redirect_url' => $frontendUrl.'/settings?instagram=connected',
                 'data' => [
                     'id' => $connection->id,
                     'instagram_username' => $connection->instagram_username,
@@ -125,7 +126,7 @@ class InstagramAuthController extends Controller
             ]);
 
             return response()->json([
-                'message' => 'Failed to connect Instagram: ' . $e->getMessage(),
+                'message' => 'Failed to connect Instagram: '.$e->getMessage(),
             ], 500);
         }
     }

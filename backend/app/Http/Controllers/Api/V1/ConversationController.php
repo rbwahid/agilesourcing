@@ -53,7 +53,7 @@ class ConversationController extends Controller
     {
         $user = $request->user();
 
-        if (!$conversation->hasParticipant($user)) {
+        if (! $conversation->hasParticipant($user)) {
             return response()->json([
                 'message' => 'You are not a participant in this conversation.',
             ], 403);
@@ -80,7 +80,7 @@ class ConversationController extends Controller
 
         // Verify the supplier exists and is a supplier
         $supplier = User::find($supplierId);
-        if (!$supplier || $supplier->role !== 'supplier') {
+        if (! $supplier || $supplier->role !== 'supplier') {
             return response()->json([
                 'message' => 'Invalid supplier.',
             ], 422);
@@ -158,7 +158,7 @@ class ConversationController extends Controller
     {
         $user = $request->user();
 
-        if (!$conversation->hasParticipant($user)) {
+        if (! $conversation->hasParticipant($user)) {
             return response()->json([
                 'message' => 'You are not a participant in this conversation.',
             ], 403);

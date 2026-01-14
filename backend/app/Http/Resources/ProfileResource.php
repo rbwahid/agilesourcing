@@ -23,7 +23,7 @@ class ProfileResource extends JsonResource
             'bio' => $this->bio,
             'profile_image_path' => $this->profile_image_path,
             'profile_image_url' => $this->profile_image_path
-                ? url('storage/' . $this->profile_image_path)
+                ? url('storage/'.$this->profile_image_path)
                 : null,
             'website_url' => $this->website_url,
             'phone' => $this->phone,

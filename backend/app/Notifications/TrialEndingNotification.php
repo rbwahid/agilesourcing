@@ -30,12 +30,12 @@ class TrialEndingNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $daysText = $this->daysRemaining === 1 ? '1 day' : $this->daysRemaining . ' days';
+        $daysText = $this->daysRemaining === 1 ? '1 day' : $this->daysRemaining.' days';
         $endDate = $this->trialEndsAt->format('F j, Y');
 
         return (new MailMessage)
-            ->subject('Your Trial Ends in ' . $daysText)
-            ->greeting('Hello ' . $notifiable->name . ',')
+            ->subject('Your Trial Ends in '.$daysText)
+            ->greeting('Hello '.$notifiable->name.',')
             ->line("Your AgileSourcing trial ends in **{$daysText}** on {$endDate}.")
             ->line('To continue using AgileSourcing without interruption:')
             ->line('- Add a payment method to your account')

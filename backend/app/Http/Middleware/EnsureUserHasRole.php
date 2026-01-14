@@ -12,20 +12,19 @@ class EnsureUserHasRole
      * Handle an incoming request.
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     * @param  string  ...$roles
      */
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {
         $user = $request->user();
 
-        if (!$user) {
+        if (! $user) {
             return response()->json([
                 'message' => 'Unauthenticated.',
             ], 401);
         }
 
         // Check if user has any of the specified roles
-        if (!$user->hasAnyRole($roles)) {
+        if (! $user->hasAnyRole($roles)) {
             return response()->json([
                 'message' => 'You do not have permission to access this resource.',
             ], 403);

@@ -102,7 +102,7 @@ class Profile extends Model
     public function getProfileImageUrlAttribute(): ?string
     {
         return $this->profile_image_path
-            ? url('storage/' . $this->profile_image_path)
+            ? url('storage/'.$this->profile_image_path)
             : null;
     }
 }

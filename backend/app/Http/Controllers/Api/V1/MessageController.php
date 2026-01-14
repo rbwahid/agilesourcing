@@ -19,7 +19,7 @@ class MessageController extends Controller
     {
         $user = $request->user();
 
-        if (!$conversation->hasParticipant($user)) {
+        if (! $conversation->hasParticipant($user)) {
             return response()->json([
                 'message' => 'You are not a participant in this conversation.',
             ], 403);
@@ -56,7 +56,7 @@ class MessageController extends Controller
     {
         $user = $request->user();
 
-        if (!$conversation->hasParticipant($user)) {
+        if (! $conversation->hasParticipant($user)) {
             return response()->json([
                 'message' => 'You are not a participant in this conversation.',
             ], 403);
@@ -67,13 +67,13 @@ class MessageController extends Controller
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $file) {
                 $path = $file->store(
-                    'messages/' . $conversation->id,
+                    'messages/'.$conversation->id,
                     'public'
                 );
 
                 $attachments[] = [
                     'name' => $file->getClientOriginalName(),
-                    'url' => url('storage/' . $path),
+                    'url' => url('storage/'.$path),
                     'type' => $file->getMimeType(),
                     'size' => $file->getSize(),
                 ];
@@ -83,7 +83,7 @@ class MessageController extends Controller
         $message = $conversation->messages()->create([
             'sender_id' => $user->id,
             'content' => $request->content,
-            'attachments' => !empty($attachments) ? $attachments : null,
+            'attachments' => ! empty($attachments) ? $attachments : null,
         ]);
 
         // Update conversation last_message_at
@@ -109,7 +109,7 @@ class MessageController extends Controller
     {
         $user = $request->user();
 
-        if (!$conversation->hasParticipant($user)) {
+        if (! $conversation->hasParticipant($user)) {
             return response()->json([
                 'message' => 'You are not a participant in this conversation.',
             ], 403);

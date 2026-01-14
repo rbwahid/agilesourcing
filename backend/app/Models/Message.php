@@ -55,7 +55,7 @@ class Message extends Model
      */
     public function markAsRead(): void
     {
-        if (!$this->isRead()) {
+        if (! $this->isRead()) {
             $this->update(['read_at' => now()]);
         }
     }
@@ -65,7 +65,7 @@ class Message extends Model
      */
     public function hasAttachments(): bool
     {
-        return !empty($this->attachments);
+        return ! empty($this->attachments);
     }
 
     /**

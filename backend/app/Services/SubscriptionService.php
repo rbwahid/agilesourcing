@@ -18,7 +18,7 @@ class SubscriptionService
     {
         $subscription = $user->subscription('default');
 
-        if (!$subscription) {
+        if (! $subscription) {
             return null;
         }
 
@@ -37,12 +37,12 @@ class SubscriptionService
     {
         $plan = $this->getCurrentPlan($user);
 
-        if (!$plan) {
+        if (! $plan) {
             // No active subscription, check trial
             if ($user->onTrial()) {
                 // Trial users get Designer Basic limits
                 $plan = Plan::where('slug', 'designer-basic')->first();
-                if (!$plan) {
+                if (! $plan) {
                     return false;
                 }
             } else {
@@ -57,12 +57,14 @@ class SubscriptionService
                 if ($plan->hasUnlimitedUploads()) {
                     return true;
                 }
+
                 return $usage['design_uploads']['used'] < $plan->design_uploads_limit;
 
             case 'validations':
                 if ($plan->hasUnlimitedValidations()) {
                     return true;
                 }
+
                 return $usage['validations']['used'] < $plan->validations_limit;
 
             default:
@@ -189,7 +191,7 @@ class SubscriptionService
         $subscription = $user->subscription('default');
         $plan = $this->getCurrentPlan($user);
 
-        if (!$subscription) {
+        if (! $subscription) {
             // Check if on trial
             if ($user->onTrial()) {
                 return [
@@ -224,7 +226,7 @@ class SubscriptionService
             'ends_at' => $subscription->ends_at?->toIso8601String(),
             'on_trial' => $subscription->onTrial(),
             'on_grace_period' => $subscription->onGracePeriod(),
-            'cancel_at_period_end' => $subscription->ends_at !== null && !$subscription->ended(),
+            'cancel_at_period_end' => $subscription->ends_at !== null && ! $subscription->ended(),
         ];
     }
 

@@ -16,7 +16,7 @@ class BillingController extends Controller
     {
         $user = $request->user();
 
-        if (!$user->stripe_id) {
+        if (! $user->stripe_id) {
             return response()->json([
                 'data' => [],
             ]);
@@ -77,7 +77,7 @@ class BillingController extends Controller
     {
         $user = $request->user();
 
-        if (!$user->stripe_id || !$user->subscribed('default')) {
+        if (! $user->stripe_id || ! $user->subscribed('default')) {
             return response()->json([
                 'data' => null,
             ]);
@@ -86,7 +86,7 @@ class BillingController extends Controller
         try {
             $invoice = $user->upcomingInvoice();
 
-            if (!$invoice) {
+            if (! $invoice) {
                 return response()->json([
                     'data' => null,
                 ]);

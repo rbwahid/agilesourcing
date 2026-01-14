@@ -19,7 +19,7 @@ class ValidationFactory extends Factory
             'variation_id' => null,
             'instagram_connection_id' => InstagramConnection::factory(),
             'instagram_post_id' => (string) fake()->unique()->numberBetween(1000000000, 9999999999),
-            'instagram_post_url' => 'https://instagram.com/p/' . fake()->bothify('???###???'),
+            'instagram_post_url' => 'https://instagram.com/p/'.fake()->bothify('???###???'),
             'posted_at' => now(),
             'validation_ends_at' => now()->addHours(48),
             'status' => 'active',

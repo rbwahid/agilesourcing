@@ -52,6 +52,7 @@ class PostToInstagramJob implements ShouldQueue
                 'validation_id' => $this->validation->id,
                 'status' => $this->validation->status,
             ]);
+
             return;
         }
 
@@ -135,8 +136,8 @@ class PostToInstagramJob implements ShouldQueue
     {
         return [
             'instagram-post',
-            'validation:' . $this->validation->id,
-            'design:' . $this->validation->design_id,
+            'validation:'.$this->validation->id,
+            'design:'.$this->validation->design_id,
         ];
     }
 }

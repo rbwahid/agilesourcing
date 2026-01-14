@@ -20,7 +20,7 @@ class ProfileController extends Controller
         $user = $request->user();
 
         // Create profile if it doesn't exist
-        if (!$user->profile) {
+        if (! $user->profile) {
             $user->profile()->create([
                 'type' => $user->role === 'supplier' ? 'supplier' : 'designer',
                 'business_name' => $user->name,
@@ -39,7 +39,7 @@ class ProfileController extends Controller
         $user = $request->user();
 
         // Create profile if it doesn't exist
-        if (!$user->profile) {
+        if (! $user->profile) {
             $user->profile()->create([
                 'type' => $user->role === 'supplier' ? 'supplier' : 'designer',
                 'business_name' => $user->name,
@@ -59,7 +59,7 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        if (!$user->profile) {
+        if (! $user->profile) {
             return response()->json([
                 'message' => 'Profile not found. Please complete your profile first.',
             ], 404);
@@ -89,7 +89,7 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        if (!$user->profile) {
+        if (! $user->profile) {
             return response()->json([
                 'message' => 'Profile not found.',
             ], 404);
@@ -102,7 +102,7 @@ class ProfileController extends Controller
 
         // Store new image
         $path = $request->file('image')->store(
-            'profiles/' . $user->id,
+            'profiles/'.$user->id,
             'public'
         );
 
@@ -113,7 +113,7 @@ class ProfileController extends Controller
         return response()->json([
             'message' => 'Profile image uploaded successfully.',
             'profile_image_path' => $path,
-            'profile_image_url' => url('storage/' . $path),
+            'profile_image_url' => url('storage/'.$path),
         ]);
     }
 
@@ -124,7 +124,7 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        if (!$user->profile || !$user->profile->profile_image_path) {
+        if (! $user->profile || ! $user->profile->profile_image_path) {
             return response()->json([
                 'message' => 'No profile image to delete.',
             ], 404);

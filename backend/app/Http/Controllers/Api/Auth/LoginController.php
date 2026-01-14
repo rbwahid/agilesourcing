@@ -18,7 +18,7 @@ class LoginController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        if (!Auth::attempt($credentials)) {
+        if (! Auth::attempt($credentials)) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
@@ -27,7 +27,7 @@ class LoginController extends Controller
         $user = Auth::user();
 
         // Check if user is active
-        if (!$user->is_active) {
+        if (! $user->is_active) {
             Auth::logout();
             throw ValidationException::withMessages([
                 'email' => ['Your account has been deactivated. Please contact support.'],

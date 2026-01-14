@@ -31,15 +31,15 @@ class SubscriptionCreatedNotification extends Notification implements ShouldQueu
     public function toMail(object $notifiable): MailMessage
     {
         $price = $this->billingPeriod === 'annual'
-            ? '$' . number_format($this->plan->price_annual, 2) . '/year'
-            : '$' . number_format($this->plan->price_monthly, 2) . '/month';
+            ? '$'.number_format($this->plan->price_annual, 2).'/year'
+            : '$'.number_format($this->plan->price_monthly, 2).'/month';
 
         $trialMessage = $notifiable->onTrial()
             ? "Your 14-day free trial has started! You won't be charged until the trial ends."
             : 'Your subscription is now active.';
 
         return (new MailMessage)
-            ->subject('Welcome to AgileSourcing ' . $this->plan->name)
+            ->subject('Welcome to AgileSourcing '.$this->plan->name)
             ->greeting('Welcome to AgileSourcing!')
             ->line($trialMessage)
             ->line("**Your Plan:** {$this->plan->name}")

@@ -53,9 +53,9 @@ class MockupRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'model_type.in' => 'Model type must be one of: ' . implode(', ', Mockup::MODEL_TYPES),
-            'pose.in' => 'Pose must be one of: ' . implode(', ', Mockup::POSES),
-            'background.in' => 'Background must be one of: ' . implode(', ', Mockup::BACKGROUNDS),
+            'model_type.in' => 'Model type must be one of: '.implode(', ', Mockup::MODEL_TYPES),
+            'pose.in' => 'Pose must be one of: '.implode(', ', Mockup::POSES),
+            'background.in' => 'Background must be one of: '.implode(', ', Mockup::BACKGROUNDS),
         ];
     }
 }

@@ -30,12 +30,12 @@ class PaymentFailedNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $formattedAmount = '$' . number_format($this->amount / 100, 2);
+        $formattedAmount = '$'.number_format($this->amount / 100, 2);
 
         return (new MailMessage)
             ->subject('Payment Failed - Action Required')
-            ->greeting('Hello ' . $notifiable->name . ',')
-            ->line('We were unable to process your payment of ' . $formattedAmount . ' for your AgileSourcing subscription.')
+            ->greeting('Hello '.$notifiable->name.',')
+            ->line('We were unable to process your payment of '.$formattedAmount.' for your AgileSourcing subscription.')
             ->line('This might be due to:')
             ->line('- Insufficient funds')
             ->line('- Expired card')

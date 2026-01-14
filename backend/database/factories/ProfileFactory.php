@@ -16,7 +16,7 @@ class ProfileFactory extends Factory
             'user_id' => User::factory(),
             'type' => fake()->randomElement(['designer', 'supplier']),
             'business_name' => fake()->company(),
-            'location' => fake()->city() . ', ' . fake()->country(),
+            'location' => fake()->city().', '.fake()->country(),
             'bio' => fake()->paragraph(),
             'profile_image_path' => null,
             'website_url' => fake()->optional()->url(),

@@ -16,7 +16,7 @@ class DesignVariationFactory extends Factory
             'design_id' => Design::factory(),
             'variation_number' => fake()->numberBetween(1, 3),
             'description' => fake()->sentence(),
-            'file_path' => 'variations/' . fake()->uuid() . '.jpg',
+            'file_path' => 'variations/'.fake()->uuid().'.jpg',
             'ai_suggestions' => [
                 'color_changes' => fake()->words(2),
                 'pattern_changes' => fake()->optional()->word(),

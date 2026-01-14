@@ -37,20 +37,21 @@ class StripeEventListener
     {
         $invoice = $payload['data']['object'] ?? null;
 
-        if (!$invoice) {
+        if (! $invoice) {
             return;
         }
 
         $customerId = $invoice['customer'] ?? null;
 
-        if (!$customerId) {
+        if (! $customerId) {
             return;
         }
 
         $user = User::where('stripe_id', $customerId)->first();
 
-        if (!$user) {
+        if (! $user) {
             Log::warning('Payment failed for unknown customer', ['stripe_id' => $customerId]);
+
             return;
         }
 
@@ -74,13 +75,13 @@ class StripeEventListener
     {
         $subscription = $payload['data']['object'] ?? null;
 
-        if (!$subscription) {
+        if (! $subscription) {
             return;
         }
 
         $customerId = $subscription['customer'] ?? null;
 
-        if (!$customerId) {
+        if (! $customerId) {
             return;
         }
 
@@ -101,14 +102,14 @@ class StripeEventListener
     {
         $subscription = $payload['data']['object'] ?? null;
 
-        if (!$subscription) {
+        if (! $subscription) {
             return;
         }
 
         $customerId = $subscription['customer'] ?? null;
         $status = $subscription['status'] ?? null;
 
-        if (!$customerId) {
+        if (! $customerId) {
             return;
         }
 

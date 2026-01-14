@@ -39,7 +39,7 @@ class SubscriptionController extends Controller
         $validated = $request->validated();
 
         // Check if user already has an active subscription
-        if ($user->subscribed('default') && !$user->subscription('default')->onGracePeriod()) {
+        if ($user->subscribed('default') && ! $user->subscription('default')->onGracePeriod()) {
             throw ValidationException::withMessages([
                 'subscription' => ['You already have an active subscription. Use the change plan endpoint to switch plans.'],
             ]);
@@ -58,7 +58,7 @@ class SubscriptionController extends Controller
         // Get the Stripe price ID
         $stripePriceId = $plan->getStripePriceId($validated['billing_period']);
 
-        if (!$stripePriceId) {
+        if (! $stripePriceId) {
             throw ValidationException::withMessages([
                 'plan_slug' => ['This plan is not yet available for subscription. Please contact support.'],
             ]);
@@ -73,12 +73,12 @@ class SubscriptionController extends Controller
                 $subscriptionBuilder = $user->newSubscription('default', $stripePriceId);
 
                 // Add 14-day trial for first-time subscribers
-                if (!$user->hasEverSubscribed()) {
+                if (! $user->hasEverSubscribed()) {
                     $subscriptionBuilder->trialDays(14);
                 }
 
                 // Add payment method if provided
-                if (!empty($validated['payment_method_id'])) {
+                if (! empty($validated['payment_method_id'])) {
                     $subscription = $subscriptionBuilder->create($validated['payment_method_id']);
                 } else {
                     // Use default payment method
@@ -101,7 +101,7 @@ class SubscriptionController extends Controller
             ], 402);
         } catch (\Exception $e) {
             throw ValidationException::withMessages([
-                'subscription' => ['Failed to create subscription: ' . $e->getMessage()],
+                'subscription' => ['Failed to create subscription: '.$e->getMessage()],
             ]);
         }
     }
@@ -115,7 +115,7 @@ class SubscriptionController extends Controller
         $validated = $request->validated();
 
         // Check if user has an active subscription
-        if (!$user->subscribed('default')) {
+        if (! $user->subscribed('default')) {
             throw ValidationException::withMessages([
                 'subscription' => ['You do not have an active subscription. Use the subscribe endpoint instead.'],
             ]);
@@ -134,7 +134,7 @@ class SubscriptionController extends Controller
         // Get the Stripe price ID
         $stripePriceId = $plan->getStripePriceId($validated['billing_period']);
 
-        if (!$stripePriceId) {
+        if (! $stripePriceId) {
             throw ValidationException::withMessages([
                 'plan_slug' => ['This plan is not yet available for subscription. Please contact support.'],
             ]);
@@ -150,7 +150,7 @@ class SubscriptionController extends Controller
             ]);
         } catch (\Exception $e) {
             throw ValidationException::withMessages([
-                'subscription' => ['Failed to change plan: ' . $e->getMessage()],
+                'subscription' => ['Failed to change plan: '.$e->getMessage()],
             ]);
         }
     }
@@ -162,7 +162,7 @@ class SubscriptionController extends Controller
     {
         $user = $request->user();
 
-        if (!$user->subscribed('default')) {
+        if (! $user->subscribed('default')) {
             throw ValidationException::withMessages([
                 'subscription' => ['You do not have an active subscription to cancel.'],
             ]);
@@ -177,7 +177,7 @@ class SubscriptionController extends Controller
             ]);
         } catch (\Exception $e) {
             throw ValidationException::withMessages([
-                'subscription' => ['Failed to cancel subscription: ' . $e->getMessage()],
+                'subscription' => ['Failed to cancel subscription: '.$e->getMessage()],
             ]);
         }
     }
@@ -190,7 +190,7 @@ class SubscriptionController extends Controller
         $user = $request->user();
         $subscription = $user->subscription('default');
 
-        if (!$subscription || !$subscription->onGracePeriod()) {
+        if (! $subscription || ! $subscription->onGracePeriod()) {
             throw ValidationException::withMessages([
                 'subscription' => ['You do not have a cancelled subscription that can be resumed.'],
             ]);
@@ -205,7 +205,7 @@ class SubscriptionController extends Controller
             ]);
         } catch (\Exception $e) {
             throw ValidationException::withMessages([
-                'subscription' => ['Failed to resume subscription: ' . $e->getMessage()],
+                'subscription' => ['Failed to resume subscription: '.$e->getMessage()],
             ]);
         }
     }

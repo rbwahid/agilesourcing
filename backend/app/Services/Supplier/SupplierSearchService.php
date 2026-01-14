@@ -13,7 +13,6 @@ class SupplierSearchService
      * Search suppliers with filters.
      *
      * @param  array  $filters  Search and filter parameters
-     * @return LengthAwarePaginator
      */
     public function search(array $filters): LengthAwarePaginator
     {
@@ -86,7 +85,6 @@ class SupplierSearchService
     /**
      * Get featured suppliers.
      *
-     * @param  int  $limit
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getFeatured(int $limit = 6)
@@ -144,9 +142,6 @@ class SupplierSearchService
 
     /**
      * Get supplier by ID with all relations.
-     *
-     * @param  int  $supplierId
-     * @return Supplier|null
      */
     public function getSupplierWithDetails(int $supplierId): ?Supplier
     {

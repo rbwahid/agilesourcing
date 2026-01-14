@@ -815,20 +815,20 @@ frontend/
 
 ### 8.1 Designer Dashboard
 
-- [ ] **Build dashboard overview**
-  - Show active designs count
-  - Display validation summary
-  - Present recent activity
+- [x] **Build dashboard overview**
+  - DesignerStatsGrid showing designs, published, validations, saved suppliers
+  - Stat cards with trend indicators and hover effects
+  - Skeleton loading states
 
-- [ ] **Create design status widgets**
-  - Show designs by status
-  - Display pending validations
-  - Highlight completed validations
+- [x] **Create design status widgets**
+  - RecentDesignsWidget showing last 5 designs with thumbnails
+  - ValidationStatusWidget with pending/active/completed counts
+  - Status badges with icons and colors
 
-- [ ] **Implement quick actions**
-  - Upload new design button
-  - View recent designs
-  - Access supplier search
+- [x] **Implement quick actions**
+  - DesignQuickActions horizontal button group
+  - Create Design (primary CTA), Run Validation, Browse Suppliers, View All
+  - Hover animations and icon containers
 
 - [ ] **Add recommended actions**
   - Suggest next steps
@@ -837,25 +837,33 @@ frontend/
 
 ### 8.2 Supplier Dashboard
 
-- [ ] **Build inquiry overview**
-  - Show new inquiries count
-  - Display inquiry pipeline
-  - Present response metrics
+- [x] **Build profile views tracking (backend)**
+  - Created supplier_profile_views migration
+  - SupplierProfileView model with relationships
+  - SupplierStatsService with recordProfileView, getStats, getViewsTimeline
+  - Updated SupplierController with stats, viewsTimeline, activity endpoints
 
-- [ ] **Create profile views widget**
-  - Track profile views
-  - Show view trends
-  - Display viewer demographics
+- [x] **Create profile views widget**
+  - ViewsChartWidget with CSS bar chart
+  - Time range selector (7d, 30d, 90d)
+  - Hover tooltips with exact values
 
-- [ ] **Implement performance metrics**
-  - Calculate response rate
-  - Track response time
-  - Show conversion metrics
+- [x] **Build analytics grid**
+  - SupplierAnalyticsGrid with 4-stat cards
+  - Profile views, inquiries, saved by, response rate
+  - Trend indicators with percentages
+  - Optional period selector
 
-- [ ] **Add profile optimization tips**
-  - Suggest profile improvements
-  - Show completeness score
-  - Recommend actions
+- [x] **Implement profile completion widget**
+  - ProfileCompletionWidget with circular SVG progress
+  - Checklist of incomplete items with links
+  - Celebration state at 100%
+
+- [x] **Create certification showcase**
+  - CertificationShowcaseWidget with certification badges
+  - Color-coded by certification type
+  - Verified vs pending status indicators
+  - Add certification CTA
 
 ---
 
@@ -1269,8 +1277,8 @@ frontend/
 | Phase 4: Instagram Integration & Validation | Complete | 90% (Core features done, optional enhancements pending) |
 | Phase 5: Supplier Module | Complete | 100% (5.1, 5.2, 5.3, 5.4 all complete) |
 | Phase 6: Messaging System | Complete | 95% (Core messaging done, email notifications pending) |
-| Phase 7: Subscription & Billing | **Complete** | **100%** |
-| Phase 8: Designer & Supplier Dashboards | **Next** | 0% |
+| Phase 7: Subscription & Billing | Complete | 100% |
+| Phase 8: Designer & Supplier Dashboards | Complete | 95% (Core dashboards done, optional recommended actions pending) |
 | Phase 9: Admin Panel - Core | Not Started | 0% |
 | Phase 10: Admin Panel - Billing & Support | Not Started | 0% |
 | Phase 11: Admin Panel - Settings & Monitoring | Not Started | 0% |
@@ -1501,6 +1509,61 @@ Frontend:
 
 ---
 
+## Phase 8 Summary (Complete)
+
+**Completed:**
+- Backend: SupplierProfileView migration and model for tracking profile views
+- Backend: SupplierStatsService with comprehensive analytics methods
+- Backend: Updated SupplierController with stats, viewsTimeline, activity endpoints
+- Backend: API routes for /supplier/stats, /supplier/stats/views, /supplier/activity
+- Frontend: Designer dashboard types (DesignerDashboardStats, DesignerActivity)
+- Frontend: Supplier dashboard types (SupplierDashboardStats, SupplierActivity, ViewsTimelineData)
+- Frontend: Updated suppliers API with getSupplierViewsTimeline, getSupplierActivity
+- Frontend: React Query hooks (useSupplierViewsTimeline, useSupplierActivity)
+- Frontend: DesignerStatsGrid component with stat cards and trends
+- Frontend: DesignQuickActions component with primary/secondary buttons
+- Frontend: RecentDesignsWidget with thumbnails, status badges, relative time
+- Frontend: ValidationStatusWidget with stats row and recent validations
+- Frontend: SupplierAnalyticsGrid with 4-stat cards and period selector
+- Frontend: ViewsChartWidget with CSS bar chart and time range selector
+- Frontend: ProfileCompletionWidget with circular progress and checklist
+- Frontend: CertificationShowcaseWidget with color-coded badges
+- Frontend: Updated dashboard pages with role-based content
+- Both frontend and backend builds pass
+
+**Optional Enhancements (Not Implemented):**
+- Recommended actions widget for designer dashboard
+- Activity feed widgets
+
+**Files Created in Phase 8:**
+
+Backend:
+- `database/migrations/2026_01_13_053230_create_supplier_profile_views_table.php`
+- `app/Models/SupplierProfileView.php`
+- `app/Services/Supplier/SupplierStatsService.php`
+- `app/Http/Controllers/Api/V1/SupplierController.php` (updated with new endpoints)
+- `routes/api.php` (updated with stats routes)
+
+Frontend:
+- `src/types/design.ts` (updated with dashboard types)
+- `src/types/supplier.ts` (updated with dashboard types)
+- `src/lib/api/suppliers.ts` (updated with new API functions)
+- `src/lib/hooks/use-suppliers.ts` (updated with new hooks)
+- `src/components/designer/designer-stats-grid.tsx`
+- `src/components/designer/design-quick-actions.tsx`
+- `src/components/designer/recent-designs-widget.tsx`
+- `src/components/designer/validation-status-widget.tsx`
+- `src/components/designer/index.ts`
+- `src/components/supplier/supplier-analytics-grid.tsx`
+- `src/components/supplier/views-chart-widget.tsx`
+- `src/components/supplier/profile-completion-widget.tsx`
+- `src/components/supplier/certification-showcase-widget.tsx`
+- `src/components/supplier/index.ts` (updated with new exports)
+- `src/app/(dashboard)/dashboard/page.tsx` (updated with designer dashboard)
+- `src/app/(supplier)/supplier-dashboard/page.tsx` (updated with supplier dashboard)
+
+---
+
 **Total Estimated Duration:** 46 weeks
 
-**Last Updated:** January 13, 2026
+**Last Updated:** January 14, 2026

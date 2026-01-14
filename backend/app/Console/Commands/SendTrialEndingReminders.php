@@ -40,7 +40,8 @@ class SendTrialEndingReminders extends Command
             ->get();
 
         if ($users->isEmpty()) {
-            $this->info('No users with trials ending in ' . $daysBeforeEnd . ' days.');
+            $this->info('No users with trials ending in '.$daysBeforeEnd.' days.');
+
             return self::SUCCESS;
         }
 

@@ -23,10 +23,6 @@ class SupplierMatchingService
 
     /**
      * Get recommended suppliers for a designer.
-     *
-     * @param  User  $designer
-     * @param  int  $limit
-     * @return Collection
      */
     public function getRecommendations(User $designer, int $limit = 10): Collection
     {
@@ -56,10 +52,6 @@ class SupplierMatchingService
 
     /**
      * Calculate match score between a supplier and designer preferences.
-     *
-     * @param  Supplier  $supplier
-     * @param  array  $preferences
-     * @return int
      */
     public function calculateMatchScore(Supplier $supplier, array $preferences): int
     {
@@ -127,9 +119,6 @@ class SupplierMatchingService
 
     /**
      * Extract designer preferences from their profile and designs.
-     *
-     * @param  User  $designer
-     * @return array
      */
     private function extractDesignerPreferences(User $designer): array
     {
@@ -185,10 +174,6 @@ class SupplierMatchingService
 
     /**
      * Get supplier recommendations for a specific design.
-     *
-     * @param  Design  $design
-     * @param  int  $limit
-     * @return Collection
      */
     public function getRecommendationsForDesign(Design $design, int $limit = 5): Collection
     {
@@ -226,8 +211,6 @@ class SupplierMatchingService
 
     /**
      * Clear recommendation cache for a user.
-     *
-     * @param  int  $userId
      */
     public function clearRecommendationCache(int $userId): void
     {
