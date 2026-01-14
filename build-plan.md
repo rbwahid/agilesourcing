@@ -975,17 +975,17 @@ frontend/
 
 ### 10.1 Subscription Management
 
-- [ ] **Build subscription overview**
+- [x] **Build subscription overview**
   - List all subscriptions
   - Filter by plan/status
   - Search by user
 
-- [ ] **Create subscription detail view**
+- [x] **Create subscription detail view**
   - Show subscription info
   - Display payment history
   - Present usage data
 
-- [ ] **Implement payment management**
+- [x] **Implement payment management**
   - View failed payments
   - Retry failed charges
   - Issue refunds
@@ -1004,12 +1004,12 @@ frontend/
 
 ### 10.3 Customer Support Tools
 
-- [ ] **Build user lookup**
+- [x] **Build user lookup**
   - Quick search by email/ID
   - Display user summary
   - Quick action buttons
 
-- [ ] **Create communication log**
+- [x] **Create communication log**
   - Show emails sent to user
   - Display notification history
   - Track support interactions
@@ -1300,7 +1300,7 @@ frontend/
 | Phase 7: Subscription & Billing | Complete | 100% |
 | Phase 8: Designer & Supplier Dashboards | Complete | 95% (Core dashboards done, optional recommended actions pending) |
 | Phase 9: Admin Panel - Core | Complete | 100% (9.1-9.5 all complete) |
-| Phase 10: Admin Panel - Billing & Support | Not Started | 0% |
+| Phase 10: Admin Panel - Billing & Support | Complete | 100% (Core 10.1, 10.3 done; P1 items 10.2, 10.4 deferred) |
 | Phase 11: Admin Panel - Settings & Monitoring | Not Started | 0% |
 | Phase 12: Security Hardening | Not Started | 0% |
 | Phase 13: Testing & Launch Preparation | Not Started | 0% |
@@ -1641,6 +1641,62 @@ Frontend:
 - `src/app/(admin)/users/[id]/page.tsx`
 - `src/app/(admin)/verifications/page.tsx`
 - `src/app/(admin)/verifications/[id]/page.tsx`
+
+---
+
+## Phase 10 Summary (Complete - Core Features)
+
+**Completed:**
+- Backend: AdminSubscriptionResource and AdminSubscriptionDetailResource
+- Backend: AdminController methods (subscriptions, showSubscription, retryPayment, createRefund, userCommunications)
+- Backend: CommunicationLog model and migration
+- Backend: LogNotificationSent listener for auto-logging notifications
+- Backend: RefundRequest validator
+- Backend: Admin routes for subscriptions and support
+- Frontend: Subscription types (AdminSubscription, AdminSubscriptionDetail, SubscriptionFilters)
+- Frontend: Communication types (CommunicationLog, CommunicationLogFilters)
+- Frontend: Admin API functions and React Query hooks for subscriptions/communications
+- Frontend: Subscriptions list page with filters and MRR display
+- Frontend: Subscription detail page with invoices and actions (retry payment, refunds)
+- Frontend: Support page with user lookup widget
+- Frontend: Communication log card on user detail page
+- Both frontend and backend builds pass
+
+**Deferred (P1 Items):**
+- 10.2 Plan Configuration (admin plan management, discount codes)
+- 10.4 Platform Announcements (announcement creator, targeting)
+
+**Files Created in Phase 10:**
+
+Backend:
+- `app/Http/Resources/Admin/AdminSubscriptionResource.php`
+- `app/Http/Resources/Admin/AdminSubscriptionDetailResource.php`
+- `app/Http/Requests/Admin/RefundRequest.php`
+- `app/Models/CommunicationLog.php`
+- `app/Listeners/LogNotificationSent.php`
+- `database/migrations/2026_01_14_192513_create_communication_logs_table.php`
+- `app/Http/Controllers/Api/Admin/AdminController.php` (updated with subscription/support methods)
+- `app/Providers/AppServiceProvider.php` (updated with notification listener)
+- `routes/api.php` (updated with subscription/support routes)
+
+Frontend:
+- `src/types/admin.ts` (updated with subscription/communication types)
+- `src/lib/api/admin.ts` (updated with subscription/communication API functions)
+- `src/lib/hooks/use-admin.ts` (updated with subscription/communication hooks)
+- `src/lib/hooks/use-debounce.ts`
+- `src/components/admin/subscriptions-data-table.tsx`
+- `src/components/admin/subscription-filters.tsx`
+- `src/components/admin/subscription-detail-card.tsx`
+- `src/components/admin/subscription-invoices-card.tsx`
+- `src/components/admin/refund-dialog.tsx`
+- `src/components/admin/retry-payment-dialog.tsx`
+- `src/components/admin/communication-log-card.tsx`
+- `src/components/admin/user-lookup-widget.tsx`
+- `src/components/admin/index.ts` (updated with new exports)
+- `src/app/(admin)/subscriptions/page.tsx`
+- `src/app/(admin)/subscriptions/[id]/page.tsx`
+- `src/app/(admin)/support/page.tsx`
+- `src/app/(admin)/users/[id]/page.tsx` (updated with communication log)
 
 ---
 
