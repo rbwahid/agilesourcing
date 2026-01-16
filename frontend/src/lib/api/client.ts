@@ -2,9 +2,9 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { toast } from 'sonner';
 import { createApiError, ApiError } from './errors';
 
-// Production URLs - hardcoded temporarily for debugging
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.agilesourcing.ca/api';
-const SANCTUM_URL = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://api.agilesourcing.ca';
+// Hardcoded production URLs (bypassing env var issues)
+const API_BASE_URL = 'https://api.agilesourcing.ca/api';
+const SANCTUM_URL = 'https://api.agilesourcing.ca';
 
 /**
  * Main API client instance
