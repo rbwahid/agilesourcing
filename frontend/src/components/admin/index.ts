@@ -28,3 +28,9 @@ export { RetryPaymentDialog } from './retry-payment-dialog';
 // Customer Support Components
 export { CommunicationLogCard } from './communication-log-card';
 export { UserLookupWidget } from './user-lookup-widget';
+
+// Plan Management Components
+export { PlansDataTable } from './plans-data-table';
+export { PlanEditDialog } from './plan-edit-dialog';
+export { PlanFeaturesEditor } from './plan-features-editor';
+export { PlanStripeSyncButton, StripeSyncStatus } from './plan-stripe-sync-button';

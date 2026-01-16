@@ -43,6 +43,7 @@ export const adminNavigation: NavigationItem[] = [
   { label: 'Users', href: '/users', icon: Users },
   { label: 'Verifications', href: '/verifications', icon: CheckCircle },
   { label: 'Subscriptions', href: '/subscriptions', icon: CreditCard },
+  { label: 'Plans', href: '/plans', icon: Package },
   { label: 'Support', href: '/support', icon: HelpCircle },
   { label: 'Settings', href: '/settings', icon: Settings },
 ];

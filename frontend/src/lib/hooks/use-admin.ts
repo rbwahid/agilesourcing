@@ -22,6 +22,11 @@ import {
   retrySubscriptionPayment,
   createRefund,
   getUserCommunications,
+  getAdminPlans,
+  getAdminPlan,
+  updatePlan,
+  togglePlanActive,
+  syncPlanWithStripe,
 } from '@/lib/api/admin';
 import type {
   UserFilters,
@@ -31,6 +36,7 @@ import type {
   SubscriptionFilters,
   RefundRequest,
   CommunicationLogFilters,
+  UpdatePlanData,
 } from '@/types/admin';
 
 // ============================================================================
@@ -57,6 +63,9 @@ export const adminKeys = {
   subscriptionsList: (filters: SubscriptionFilters) =>
     [...adminKeys.subscriptions(), 'list', filters] as const,
   subscription: (id: number) => [...adminKeys.subscriptions(), 'detail', id] as const,
+  plans: () => [...adminKeys.all, 'plans'] as const,
+  plansList: () => [...adminKeys.plans(), 'list'] as const,
+  plan: (id: number) => [...adminKeys.plans(), 'detail', id] as const,
 };
 
 // ============================================================================
@@ -350,5 +359,90 @@ export function useUserCommunications(userId: number, filters: CommunicationLogF
     queryFn: () => getUserCommunications(userId, filters),
     enabled: !!userId,
     staleTime: 30 * 1000,
+  });
+}
+
+// ============================================================================
+// Plan Management Hooks
+// ============================================================================
+
+/**
+ * Fetch all plans (including inactive).
+ */
+export function useAdminPlans() {
+  return useQuery({
+    queryKey: adminKeys.plansList(),
+    queryFn: getAdminPlans,
+    staleTime: 60 * 1000, // 1 minute
+  });
+}
+
+/**
+ * Fetch single plan details.
+ */
+export function useAdminPlan(id: number) {
+  return useQuery({
+    queryKey: adminKeys.plan(id),
+    queryFn: () => getAdminPlan(id),
+    enabled: !!id,
+  });
+}
+
+/**
+ * Update plan mutation.
+ */
+export function useUpdatePlan() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: UpdatePlanData }) => updatePlan(id, data),
+    onSuccess: (_, { id }) => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.plans() });
+      queryClient.invalidateQueries({ queryKey: adminKeys.plan(id) });
+      toast.success('Plan updated successfully');
+    },
+    onError: () => {
+      toast.error('Failed to update plan');
+    },
+  });
+}
+
+/**
+ * Toggle plan active status mutation.
+ */
+export function useTogglePlanActive() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: togglePlanActive,
+    onSuccess: (result, id) => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.plans() });
+      queryClient.invalidateQueries({ queryKey: adminKeys.plan(id) });
+      toast.success(result.message);
+    },
+    onError: (error: Error & { response?: { data?: { message?: string } } }) => {
+      const message = error.response?.data?.message || 'Failed to toggle plan status';
+      toast.error(message);
+    },
+  });
+}
+
+/**
+ * Sync plan with Stripe mutation.
+ */
+export function useSyncPlanStripe() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: syncPlanWithStripe,
+    onSuccess: (result, id) => {
+      queryClient.invalidateQueries({ queryKey: adminKeys.plans() });
+      queryClient.invalidateQueries({ queryKey: adminKeys.plan(id) });
+      toast.success(result.message);
+    },
+    onError: (error: Error & { response?: { data?: { message?: string; error?: string } } }) => {
+      const message = error.response?.data?.error || 'Failed to sync with Stripe';
+      toast.error(message);
+    },
   });
 }

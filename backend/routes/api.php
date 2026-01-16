@@ -358,6 +358,18 @@ Route::middleware('auth:sanctum')->group(function () {
             // User Support
             Route::get('/users/{user}/communications', [\App\Http\Controllers\Api\Admin\AdminController::class, 'userCommunications'])
                 ->name('users.communications');
+
+            // Plan Management
+            Route::get('/plans', [\App\Http\Controllers\Api\Admin\AdminPlanController::class, 'index'])
+                ->name('plans.index');
+            Route::get('/plans/{plan}', [\App\Http\Controllers\Api\Admin\AdminPlanController::class, 'show'])
+                ->name('plans.show');
+            Route::put('/plans/{plan}', [\App\Http\Controllers\Api\Admin\AdminPlanController::class, 'update'])
+                ->name('plans.update');
+            Route::post('/plans/{plan}/toggle-active', [\App\Http\Controllers\Api\Admin\AdminPlanController::class, 'toggleActive'])
+                ->name('plans.toggle-active');
+            Route::post('/plans/{plan}/sync-stripe', [\App\Http\Controllers\Api\Admin\AdminPlanController::class, 'syncStripe'])
+                ->name('plans.sync-stripe');
         });
     });
 });

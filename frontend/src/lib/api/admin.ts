@@ -19,6 +19,10 @@ import type {
   RefundResponse,
   CommunicationLog,
   CommunicationLogFilters,
+  AdminPlan,
+  UpdatePlanData,
+  StripeSyncResult,
+  ToggleActiveResult,
 } from '@/types/admin';
 
 // ============================================================================
@@ -242,5 +246,49 @@ export async function getUserCommunications(
     `/v1/admin/users/${userId}/communications`,
     { params: filters }
   );
+  return response.data;
+}
+
+// ============================================================================
+// Plan Management
+// ============================================================================
+
+/**
+ * Get all plans (including inactive).
+ */
+export async function getAdminPlans(): Promise<AdminPlan[]> {
+  const response = await apiClient.get<{ data: AdminPlan[] }>('/v1/admin/plans');
+  return response.data.data;
+}
+
+/**
+ * Get a single plan by ID.
+ */
+export async function getAdminPlan(id: number): Promise<AdminPlan> {
+  const response = await apiClient.get<{ data: AdminPlan }>(`/v1/admin/plans/${id}`);
+  return response.data.data;
+}
+
+/**
+ * Update a plan.
+ */
+export async function updatePlan(id: number, data: UpdatePlanData): Promise<AdminPlan> {
+  const response = await apiClient.put<{ data: AdminPlan }>(`/v1/admin/plans/${id}`, data);
+  return response.data.data;
+}
+
+/**
+ * Toggle plan active status.
+ */
+export async function togglePlanActive(id: number): Promise<ToggleActiveResult> {
+  const response = await apiClient.post<ToggleActiveResult>(`/v1/admin/plans/${id}/toggle-active`);
+  return response.data;
+}
+
+/**
+ * Sync plan with Stripe (create/update product and prices).
+ */
+export async function syncPlanWithStripe(id: number): Promise<StripeSyncResult> {
+  const response = await apiClient.post<StripeSyncResult>(`/v1/admin/plans/${id}/sync-stripe`);
   return response.data;
 }
