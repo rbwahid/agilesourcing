@@ -990,14 +990,16 @@ frontend/
   - Retry failed charges
   - Issue refunds
 
-### 10.2 Plan Configuration (P1)
+### 10.2 Plan Configuration
 
-- [ ] **Build plan management**
-  - View existing plans
-  - Edit plan features
-  - Adjust pricing
+- [x] **Build plan management**
+  - View existing plans (grouped by user type)
+  - Edit plan name, pricing (monthly/annual), usage limits
+  - Toggle plan features (designer and supplier feature sets)
+  - Toggle plan active/inactive status
+  - Sync plans with Stripe (create/update products and prices)
 
-- [ ] **Create discount codes**
+- [ ] **Create discount codes** (P1 - Deferred)
   - Generate discount codes
   - Set discount parameters
   - Track code usage
@@ -1320,7 +1322,7 @@ frontend/
 | Phase 7: Subscription & Billing | Complete | 100% |
 | Phase 8: Designer & Supplier Dashboards | Complete | 95% (Core dashboards done, optional recommended actions pending) |
 | Phase 9: Admin Panel - Core | Complete | 100% (9.1-9.5 all complete) |
-| Phase 10: Admin Panel - Billing & Support | Complete | 100% (Core 10.1, 10.3 done; P1 items 10.2, 10.4 deferred) |
+| Phase 10: Admin Panel - Billing & Support | Complete | 100% (10.1, 10.2, 10.3 done; P1 items: discount codes, announcements deferred) |
 | Phase 11: Admin Panel - Settings & Monitoring | Not Started | 0% |
 | Phase 12: Security Hardening | Complete | 95% (Core security done; GDPR/penetration testing deferred) |
 | Phase 13: Testing & Launch Preparation | Not Started | 0% |
@@ -1664,7 +1666,7 @@ Frontend:
 
 ---
 
-## Phase 10 Summary (Complete - Core Features)
+## Phase 10 Summary (Complete)
 
 **Completed:**
 - Backend: AdminSubscriptionResource and AdminSubscriptionDetailResource
@@ -1673,17 +1675,24 @@ Frontend:
 - Backend: LogNotificationSent listener for auto-logging notifications
 - Backend: RefundRequest validator
 - Backend: Admin routes for subscriptions and support
+- Backend: AdminPlanController with index, show, update, toggleActive, syncStripe endpoints
+- Backend: UpdatePlanRequest validation, AdminPlanResource
+- Backend: PlanService with Stripe product/price sync logic
+- Backend: Plan model extended with subscriptions relationship
 - Frontend: Subscription types (AdminSubscription, AdminSubscriptionDetail, SubscriptionFilters)
 - Frontend: Communication types (CommunicationLog, CommunicationLogFilters)
-- Frontend: Admin API functions and React Query hooks for subscriptions/communications
+- Frontend: Plan types (AdminPlan, PlanFeatures, UpdatePlanData, StripeSyncResult, ToggleActiveResult)
+- Frontend: Admin API functions and React Query hooks for subscriptions/communications/plans
 - Frontend: Subscriptions list page with filters and MRR display
 - Frontend: Subscription detail page with invoices and actions (retry payment, refunds)
+- Frontend: Plans page with summary stats and grouped data table
+- Frontend: Plan edit dialog with tabs for pricing/limits and features
 - Frontend: Support page with user lookup widget
 - Frontend: Communication log card on user detail page
 - Both frontend and backend builds pass
 
 **Deferred (P1 Items):**
-- 10.2 Plan Configuration (admin plan management, discount codes)
+- 10.2 Discount Codes (generate codes, set parameters, track usage)
 - 10.4 Platform Announcements (announcement creator, targeting)
 
 **Files Created in Phase 10:**
@@ -1698,11 +1707,16 @@ Backend:
 - `app/Http/Controllers/Api/Admin/AdminController.php` (updated with subscription/support methods)
 - `app/Providers/AppServiceProvider.php` (updated with notification listener)
 - `routes/api.php` (updated with subscription/support routes)
+- `app/Http/Controllers/Api/Admin/AdminPlanController.php`
+- `app/Http/Requests/Admin/UpdatePlanRequest.php`
+- `app/Http/Resources/Admin/AdminPlanResource.php`
+- `app/Services/PlanService.php`
+- `app/Models/Plan.php` (updated with subscriptions relationship)
 
 Frontend:
-- `src/types/admin.ts` (updated with subscription/communication types)
-- `src/lib/api/admin.ts` (updated with subscription/communication API functions)
-- `src/lib/hooks/use-admin.ts` (updated with subscription/communication hooks)
+- `src/types/admin.ts` (updated with subscription/communication/plan types)
+- `src/lib/api/admin.ts` (updated with subscription/communication/plan API functions)
+- `src/lib/hooks/use-admin.ts` (updated with subscription/communication/plan hooks)
 - `src/lib/hooks/use-debounce.ts`
 - `src/components/admin/subscriptions-data-table.tsx`
 - `src/components/admin/subscription-filters.tsx`
@@ -1712,14 +1726,21 @@ Frontend:
 - `src/components/admin/retry-payment-dialog.tsx`
 - `src/components/admin/communication-log-card.tsx`
 - `src/components/admin/user-lookup-widget.tsx`
+- `src/components/admin/plans-data-table.tsx`
+- `src/components/admin/plan-edit-dialog.tsx`
+- `src/components/admin/plan-features-editor.tsx`
+- `src/components/admin/plan-stripe-sync-button.tsx`
 - `src/components/admin/index.ts` (updated with new exports)
+- `src/components/ui/alert.tsx`
+- `src/config/navigation.ts` (updated with Plans link)
 - `src/app/(admin)/subscriptions/page.tsx`
 - `src/app/(admin)/subscriptions/[id]/page.tsx`
 - `src/app/(admin)/support/page.tsx`
+- `src/app/(admin)/plans/page.tsx`
 - `src/app/(admin)/users/[id]/page.tsx` (updated with communication log)
 
 ---
 
 **Total Estimated Duration:** 46 weeks
 
-**Last Updated:** January 14, 2026 (Phase 12 Complete)
+**Last Updated:** January 16, 2026 (Phase 10.2 Plan Configuration Complete)
