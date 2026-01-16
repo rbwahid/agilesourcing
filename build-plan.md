@@ -1326,6 +1326,7 @@ frontend/
 | Phase 11: Admin Panel - Settings & Monitoring | Not Started | 0% |
 | Phase 12: Security Hardening | Complete | 95% (Core security done; GDPR/penetration testing deferred) |
 | Phase 13: Testing & Launch Preparation | Not Started | 0% |
+| Phase 14: Landing Pages | Not Started | 0% |
 
 ---
 
@@ -1741,6 +1742,29 @@ Frontend:
 
 ---
 
-**Total Estimated Duration:** 46 weeks
+## Phase 14: Landing Pages (MVP Launch)
 
-**Last Updated:** January 16, 2026 (Phase 10.2 Plan Configuration Complete)
+### 14.1 Public Marketing Pages
+
+- [ ] **Homepage** (`/`)
+- [ ] **For Designers** (`/for-designers`)
+- [ ] **For Suppliers** (`/for-suppliers`)
+- [ ] **How It Works** (`/how-it-works`)
+- [ ] **Contact** (`/contact`)
+
+### 14.2 Legal & Support Pages
+
+- [ ] **Privacy Policy** (`/privacy`)
+- [ ] **Terms of Service** (`/terms`)
+
+### 14.3 Existing Pages (Review & Polish)
+
+- [ ] **Pricing** (`/pricing`) - Already exists, may need updates
+- [ ] **Login** (`/login`) - Already exists
+- [ ] **Register** (`/register`) - Already exists
+
+---
+
+**Total Estimated Duration:** 48 weeks
+
+**Last Updated:** January 16, 2026 (Phase 14 Landing Pages Added)
