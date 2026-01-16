@@ -2,9 +2,14 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { toast } from 'sonner';
 import { createApiError, ApiError } from './errors';
 
-// Hardcoded production URLs (bypassing env var issues)
-const API_BASE_URL = 'https://api.agilesourcing.ca/api';
-const SANCTUM_URL = 'https://api.agilesourcing.ca';
+// Use env var for local dev, hardcoded for production (Turbopack has issues with env vars)
+const isDev = process.env.NODE_ENV === 'development';
+const API_BASE_URL = isDev
+  ? (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api')
+  : 'https://api.agilesourcing.ca/api';
+const SANCTUM_URL = isDev
+  ? (process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000')
+  : 'https://api.agilesourcing.ca';
 
 /**
  * Main API client instance
