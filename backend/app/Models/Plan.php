@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Laravel\Cashier\Subscription;
 
 class Plan extends Model
 {
@@ -94,5 +96,37 @@ class Plan extends Model
         return $billingPeriod === 'annual'
             ? (float) $this->price_annual
             : (float) $this->price_monthly;
+    }
+
+    /**
+     * Get subscriptions using this plan's Stripe price IDs.
+     */
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class, 'stripe_price', 'stripe_price_monthly_id')
+            ->orWhere('stripe_price', $this->stripe_price_annual_id);
+    }
+
+    /**
+     * Get count of active subscriptions for this plan.
+     */
+    public function getActiveSubscriberCountAttribute(): int
+    {
+        return Subscription::where('stripe_status', 'active')
+            ->where(function ($query) {
+                $query->where('stripe_price', $this->stripe_price_monthly_id)
+                    ->orWhere('stripe_price', $this->stripe_price_annual_id);
+            })
+            ->count();
+    }
+
+    /**
+     * Check if plan has Stripe IDs configured.
+     */
+    public function hasStripeIds(): bool
+    {
+        return $this->stripe_product_id !== null
+            && $this->stripe_price_monthly_id !== null
+            && $this->stripe_price_annual_id !== null;
     }
 }

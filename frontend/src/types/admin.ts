@@ -303,6 +303,75 @@ export interface CommunicationLogFilters {
   per_page?: number;
 }
 
+// Plan Management Types
+
+export type PlanUserType = 'designer' | 'supplier';
+
+export interface PlanFeatures {
+  design_uploads: boolean;
+  ai_analysis: boolean;
+  trend_scoring: boolean;
+  design_variations: boolean;
+  instagram_validation: boolean;
+  supplier_directory: boolean;
+  supplier_contact: boolean;
+  messaging: boolean;
+  export_reports: boolean;
+  priority_support: boolean;
+  advanced_analytics: boolean;
+  profile_listing: boolean;
+  product_catalog: boolean;
+  inquiry_management: boolean;
+  verification_badge: boolean;
+  featured_listing: boolean;
+  analytics_dashboard: boolean;
+  lead_insights: boolean;
+}
+
+export interface AdminPlan {
+  id: number;
+  name: string;
+  slug: string;
+  user_type: PlanUserType;
+  price_monthly: number;
+  price_annual: number;
+  features: Partial<PlanFeatures>;
+  design_uploads_limit: number | null;
+  validations_limit: number | null;
+  has_unlimited_uploads: boolean;
+  has_unlimited_validations: boolean;
+  is_active: boolean;
+  stripe_product_id: string | null;
+  stripe_price_monthly_id: string | null;
+  stripe_price_annual_id: string | null;
+  has_stripe_ids: boolean;
+  subscriber_count: number;
+  active_subscriber_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface UpdatePlanData {
+  name?: string;
+  price_monthly?: number;
+  price_annual?: number;
+  features?: Partial<PlanFeatures>;
+  design_uploads_limit?: number | null;
+  validations_limit?: number | null;
+}
+
+export interface StripeSyncResult {
+  message: string;
+  stripe_product_id: string;
+  stripe_price_monthly_id: string;
+  stripe_price_annual_id: string;
+}
+
+export interface ToggleActiveResult {
+  message: string;
+  is_active: boolean;
+}
+
 // Paginated Response
 
 export interface PaginatedResponse<T> {
