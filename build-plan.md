@@ -1309,6 +1309,29 @@ frontend/
 
 ---
 
+## Phase 14: Landing Pages (MVP Launch)
+
+### 14.1 Public Marketing Pages
+
+- [ ] **Homepage** (`/`)
+- [ ] **For Designers** (`/for-designers`)
+- [ ] **For Suppliers** (`/for-suppliers`)
+- [ ] **How It Works** (`/how-it-works`)
+- [ ] **Contact** (`/contact`)
+
+### 14.2 Legal & Support Pages
+
+- [ ] **Privacy Policy** (`/privacy`)
+- [ ] **Terms of Service** (`/terms`)
+
+### 14.3 Existing Pages (Review & Polish)
+
+- [ ] **Pricing** (`/pricing`) - Already exists, may need updates
+- [ ] **Login** (`/login`) - Already exists
+- [ ] **Register** (`/register`) - Already exists
+
+---
+
 ## Progress Tracking
 
 | Phase | Status | Completion |
@@ -1739,29 +1762,6 @@ Frontend:
 - `src/app/(admin)/support/page.tsx`
 - `src/app/(admin)/plans/page.tsx`
 - `src/app/(admin)/users/[id]/page.tsx` (updated with communication log)
-
----
-
-## Phase 14: Landing Pages (MVP Launch)
-
-### 14.1 Public Marketing Pages
-
-- [ ] **Homepage** (`/`)
-- [ ] **For Designers** (`/for-designers`)
-- [ ] **For Suppliers** (`/for-suppliers`)
-- [ ] **How It Works** (`/how-it-works`)
-- [ ] **Contact** (`/contact`)
-
-### 14.2 Legal & Support Pages
-
-- [ ] **Privacy Policy** (`/privacy`)
-- [ ] **Terms of Service** (`/terms`)
-
-### 14.3 Existing Pages (Review & Polish)
-
-- [ ] **Pricing** (`/pricing`) - Already exists, may need updates
-- [ ] **Login** (`/login`) - Already exists
-- [ ] **Register** (`/register`) - Already exists
 
 ---
 
