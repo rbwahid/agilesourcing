@@ -85,11 +85,11 @@ export function SubscriptionFilters({ filters, onChange, onClear }: Subscription
         <div className="space-y-2">
           <Label className="text-sm text-gray-600">Status</Label>
           <Select
-            value={filters.status || ''}
+            value={filters.status || 'all'}
             onValueChange={(value) =>
               onChange({
                 ...filters,
-                status: value as StripeSubscriptionStatus || undefined,
+                status: value === 'all' ? undefined : value as StripeSubscriptionStatus,
                 page: 1,
               })
             }
@@ -98,7 +98,7 @@ export function SubscriptionFilters({ filters, onChange, onClear }: Subscription
               <SelectValue placeholder="All statuses" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All statuses</SelectItem>
+              <SelectItem value="all">All statuses</SelectItem>
               {STATUS_OPTIONS.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
                   {option.label}
@@ -112,16 +112,16 @@ export function SubscriptionFilters({ filters, onChange, onClear }: Subscription
         <div className="space-y-2">
           <Label className="text-sm text-gray-600">Plan</Label>
           <Select
-            value={filters.plan || ''}
+            value={filters.plan || 'all'}
             onValueChange={(value) =>
-              onChange({ ...filters, plan: value || undefined, page: 1 })
+              onChange({ ...filters, plan: value === 'all' ? undefined : value, page: 1 })
             }
           >
             <SelectTrigger>
               <SelectValue placeholder="All plans" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All plans</SelectItem>
+              <SelectItem value="all">All plans</SelectItem>
               {PLAN_OPTIONS.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
                   {option.label}
@@ -135,11 +135,11 @@ export function SubscriptionFilters({ filters, onChange, onClear }: Subscription
         <div className="space-y-2">
           <Label className="text-sm text-gray-600">Billing Period</Label>
           <Select
-            value={filters.billing_period || ''}
+            value={filters.billing_period || 'all'}
             onValueChange={(value) =>
               onChange({
                 ...filters,
-                billing_period: value as BillingPeriod || undefined,
+                billing_period: value === 'all' ? undefined : value as BillingPeriod,
                 page: 1,
               })
             }
@@ -148,7 +148,7 @@ export function SubscriptionFilters({ filters, onChange, onClear }: Subscription
               <SelectValue placeholder="All periods" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All periods</SelectItem>
+              <SelectItem value="all">All periods</SelectItem>
               {BILLING_PERIOD_OPTIONS.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
                   {option.label}

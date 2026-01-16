@@ -93,7 +93,7 @@ export function AdminRecentActivity({ limit = 10, className }: AdminRecentActivi
           <CardDescription>Latest platform events and actions</CardDescription>
         </div>
         <Button variant="ghost" size="sm" asChild className="text-agile-teal hover:text-agile-teal/80">
-          <Link href="/audit-logs">View All</Link>
+          <Link href="/users">View Users</Link>
         </Button>
       </CardHeader>
       <CardContent>
