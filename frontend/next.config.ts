@@ -81,7 +81,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'api.agilesourcing.io',
+        hostname: 'api.agilesourcing.ca',
         pathname: '/storage/**',
       },
     ],
