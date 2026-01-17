@@ -1339,6 +1339,7 @@ frontend/
   - Business info editing (name, location, bio, website)
   - Style preferences management
   - Target demographics editing
+  - **TODO:** Fix Next.js image optimization for profile pictures (currently using `unoptimized` prop as workaround)
 
 ---
 
