@@ -185,6 +185,7 @@ export function DesignerProfileForm({ initialData }: DesignerProfileFormProps) {
                     src={imagePreview}
                     alt="Profile"
                     fill
+                    unoptimized
                     className="object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 flex items-center justify-center bg-charcoal/60 opacity-0 backdrop-blur-[2px] transition-all duration-300 group-hover:opacity-100">
