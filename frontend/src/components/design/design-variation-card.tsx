@@ -46,6 +46,7 @@ export function DesignVariationCard({
             src={imageUrl}
             alt={isOriginal ? 'Original Design' : `Variation ${variation.variation_number}`}
             fill
+            unoptimized
             className="object-cover transition-transform duration-500 group-hover:scale-105"
             onError={() => setImageError(true)}
           />

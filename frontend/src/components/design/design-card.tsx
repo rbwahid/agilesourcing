@@ -57,6 +57,7 @@ export function DesignCard({ design, onDelete }: DesignCardProps) {
               src={design.file_url}
               alt={design.title}
               fill
+              unoptimized
               className={cn(
                 'object-cover transition-transform duration-500',
                 isHovered && 'scale-105'
