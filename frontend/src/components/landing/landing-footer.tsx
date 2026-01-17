@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 const navigation = {
   product: [
-    { name: 'Features', href: '/#features' },
+    { name: 'Features', href: '/features' },
     { name: 'Pricing', href: '/pricing' },
     { name: 'For Designers', href: '/for-designers' },
     { name: 'For Suppliers', href: '/for-suppliers' },

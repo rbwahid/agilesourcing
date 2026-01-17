@@ -1,4 +1,5 @@
 import {
+  LandingNavbar,
   HeroSection,
   ProblemSolution,
   FeaturesGrid,
@@ -12,6 +13,7 @@ import {
 export default function Home() {
   return (
     <main className="min-h-screen">
+      <LandingNavbar />
       <HeroSection />
       <ProblemSolution />
       <FeaturesGrid />
