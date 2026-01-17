@@ -45,6 +45,7 @@ export interface Design {
   ai_analysis_result: AIAnalysisResult | null;
   trend_score: number | null;
   status: DesignStatus;
+  image_locked: boolean;
   variations_count?: number;
   variations?: DesignVariation[];
   created_at: string;
@@ -134,6 +135,7 @@ export interface UpdateDesignData {
   season?: DesignSeason | null;
   target_demographic?: string | null;
   status?: DesignStatus;
+  design_file?: File;
 }
 
 /**

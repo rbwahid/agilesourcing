@@ -69,12 +69,44 @@ export async function createDesign(
 }
 
 /**
- * Update a design
+ * Update a design (supports file replacement)
  */
 export async function updateDesign(
   id: number,
   data: UpdateDesignData
 ): Promise<{ message: string; data: Design }> {
+  // Use FormData if there's a file to upload
+  if (data.design_file) {
+    const formData = new FormData();
+    formData.append('_method', 'PUT'); // Laravel method spoofing for file uploads
+
+    if (data.title) formData.append('title', data.title);
+    if (data.category) formData.append('category', data.category);
+    if (data.description !== undefined) {
+      formData.append('description', data.description || '');
+    }
+    if (data.season !== undefined) {
+      formData.append('season', data.season || '');
+    }
+    if (data.target_demographic !== undefined) {
+      formData.append('target_demographic', data.target_demographic || '');
+    }
+    if (data.status) formData.append('status', data.status);
+    formData.append('design_file', data.design_file);
+
+    const response = await apiClient.post<{ message: string; data: Design }>(
+      `/v1/designs/${id}`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+    return response.data;
+  }
+
+  // Regular JSON update for metadata-only changes
   const response = await apiClient.put<{ message: string; data: Design }>(
     `/v1/designs/${id}`,
     data

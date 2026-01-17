@@ -95,11 +95,48 @@ class DesignController extends Controller
     }
 
     /**
-     * Update design metadata.
+     * Update design metadata and optionally replace the design file.
      */
     public function update(UpdateDesignRequest $request, Design $design): JsonResponse
     {
-        $design->update($request->validated());
+        $data = $request->validated();
+
+        // Handle file replacement if a new file is uploaded
+        if ($request->hasFile('design_file')) {
+            $file = $request->file('design_file');
+
+            // Delete old file
+            if ($design->file_path) {
+                Storage::disk('public')->delete($design->file_path);
+            }
+
+            // Store new file
+            $path = $file->store(
+                'designs/'.$design->id,
+                'public'
+            );
+
+            // Update file-related fields
+            $data['file_path'] = $path;
+            $data['file_type'] = $file->getMimeType();
+            $data['original_filename'] = $file->getClientOriginalName();
+            $data['file_size'] = $file->getSize();
+
+            // Reset AI analysis since image changed
+            $data['ai_analysis_status'] = 'pending';
+            $data['ai_analysis_result'] = null;
+            $data['trend_score'] = null;
+        }
+
+        // Remove design_file from data as it's not a model attribute
+        unset($data['design_file']);
+
+        $design->update($data);
+
+        // Re-trigger AI analysis if image was replaced
+        if ($request->hasFile('design_file')) {
+            AnalyzeDesignJob::dispatch($design);
+        }
 
         return response()->json([
             'message' => 'Design updated successfully.',

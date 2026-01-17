@@ -27,6 +27,7 @@ class Design extends Model
         'ai_analysis_result',
         'trend_score',
         'status',
+        'image_locked',
     ];
 
     protected function casts(): array
@@ -35,7 +36,23 @@ class Design extends Model
             'ai_analysis_result' => 'array',
             'trend_score' => 'integer',
             'file_size' => 'integer',
+            'image_locked' => 'boolean',
         ];
+    }
+
+    /**
+     * Boot the model and register event listeners.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Lock image when status changes from draft to any other status
+        static::updating(function (Design $design) {
+            if ($design->isDirty('status') && $design->getOriginal('status') === 'draft' && $design->status !== 'draft') {
+                $design->image_locked = true;
+            }
+        });
     }
 
     /**

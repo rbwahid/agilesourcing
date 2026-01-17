@@ -34,6 +34,7 @@ class DesignResource extends JsonResource
             'ai_analysis_result' => $this->ai_analysis_result,
             'trend_score' => $this->trend_score,
             'status' => $this->status,
+            'image_locked' => $this->image_locked ?? false,
             'variations_count' => $this->whenCounted('variations'),
             'variations' => DesignVariationResource::collection($this->whenLoaded('variations')),
             'created_at' => $this->created_at?->toISOString(),

@@ -25,7 +25,20 @@ class UpdateDesignRequest extends FormRequest
      */
     public function rules(): array
     {
+        $design = $this->route('design');
+        $fileRules = ['nullable', 'file', 'mimes:jpeg,jpg,png,webp,pdf', 'max:10240'];
+
+        // Reject file upload if image is locked
+        if ($design && $design->image_locked) {
+            $fileRules[] = function ($attribute, $value, $fail) {
+                if ($value) {
+                    $fail('The design image cannot be changed after publishing.');
+                }
+            };
+        }
+
         return [
+            'design_file' => $fileRules,
             'title' => ['sometimes', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:2000'],
             'category' => ['sometimes', 'string', Rule::in([
