@@ -31,30 +31,25 @@ class EmailVerificationController extends Controller
     }
 
     /**
-     * Verify email address.
+     * Verify email address and redirect to frontend dashboard.
      */
-    public function verify(Request $request, int $id, string $hash): JsonResponse
+    public function verify(Request $request, int $id, string $hash)
     {
         $user = User::findOrFail($id);
+        $frontendUrl = config('app.frontend_url');
 
         if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
-            return response()->json([
-                'message' => 'Invalid verification link.',
-            ], 400);
+            return redirect($frontendUrl . '/dashboard?verified=invalid');
         }
 
         if ($user->hasVerifiedEmail()) {
-            return response()->json([
-                'message' => 'Email is already verified.',
-            ]);
+            return redirect($frontendUrl . '/dashboard?verified=already');
         }
 
         if ($user->markEmailAsVerified()) {
             event(new Verified($user));
         }
 
-        return response()->json([
-            'message' => 'Email verified successfully.',
-        ]);
+        return redirect($frontendUrl . '/dashboard?verified=success');
     }
 }

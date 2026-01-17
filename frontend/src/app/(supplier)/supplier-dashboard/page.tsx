@@ -13,6 +13,7 @@ import {
 } from '@/components/supplier';
 import { useSupplierProfile, useSupplierStats } from '@/lib/hooks/use-suppliers';
 import { useUser } from '@/lib/hooks/use-auth';
+import { useVerificationHandler } from '@/lib/hooks/use-verification-handler';
 
 function WelcomeHeader({ companyName }: { companyName?: string }) {
   const greeting = getGreeting();
@@ -80,6 +81,9 @@ export default function SupplierDashboardPage() {
   const { data: user, isLoading: userLoading } = useUser();
   const { data: profile, isLoading: profileLoading } = useSupplierProfile();
   const { data: stats, isLoading: statsLoading } = useSupplierStats();
+
+  // Handle email verification redirect notifications
+  useVerificationHandler();
 
   const isLoading = userLoading || profileLoading || statsLoading;
 

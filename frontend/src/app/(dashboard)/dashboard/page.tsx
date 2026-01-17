@@ -1,6 +1,7 @@
 'use client';
 
 import { useUser } from '@/lib/hooks/use-auth';
+import { useVerificationHandler } from '@/lib/hooks/use-verification-handler';
 import {
   DesignerStatsGrid,
   DesignQuickActions,
@@ -55,6 +56,9 @@ function DashboardSkeleton() {
 
 export default function DesignerDashboardPage() {
   const { data: user, isLoading } = useUser();
+
+  // Handle email verification redirect notifications
+  useVerificationHandler();
 
   if (isLoading) {
     return <DashboardSkeleton />;
