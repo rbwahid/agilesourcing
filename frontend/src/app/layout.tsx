@@ -29,6 +29,28 @@ export const metadata: Metadata = {
     ],
     shortcut: "/favicon.png",
   },
+  openGraph: {
+    title: "AgileSourcing - Fashion Design Validation",
+    description: "Validate your fashion designs with real consumer feedback before production. Connect with verified suppliers and bring your designs to life.",
+    url: "https://agilesourcing.io",
+    siteName: "AgileSourcing",
+    images: [
+      {
+        url: "/agilesourcing-logo.png",
+        width: 800,
+        height: 600,
+        alt: "AgileSourcing Logo",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AgileSourcing - Fashion Design Validation",
+    description: "Validate your fashion designs with real consumer feedback before production.",
+    images: ["/agilesourcing-logo.png"],
+  },
 };
 
 export default function RootLayout({
