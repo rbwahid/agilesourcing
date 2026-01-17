@@ -98,11 +98,14 @@ class Profile extends Model
 
     /**
      * Get the profile_image_url attribute.
+     * Uses public storage URL since profile images are viewable by others.
      */
     public function getProfileImageUrlAttribute(): ?string
     {
-        return $this->profile_image_path
-            ? url('storage/'.$this->profile_image_path)
-            : null;
+        if (! $this->profile_image_path) {
+            return null;
+        }
+
+        return \Illuminate\Support\Facades\Storage::disk('public')->url($this->profile_image_path);
     }
 }

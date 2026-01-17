@@ -1332,6 +1332,17 @@ frontend/
 
 ---
 
+## Enhancements
+
+- [x] **Designer Profile Page** (`/profile`)
+  - Profile image upload with drag-and-drop
+  - Business info editing (name, location, bio, website)
+  - Style preferences management
+  - Target demographics editing
+  - **TODO:** Fix Next.js image optimization for profile pictures (currently using `unoptimized` prop as workaround)
+
+---
+
 ## Progress Tracking
 
 | Phase | Status | Completion |

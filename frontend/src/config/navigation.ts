@@ -25,6 +25,7 @@ export const designerNavigation: NavigationItem[] = [
   { label: 'Find Suppliers', href: '/suppliers', icon: Building2 },
   { label: 'Saved Suppliers', href: '/suppliers/saved', icon: Heart },
   { label: 'Messages', href: '/messages', icon: MessageSquare },
+  { label: 'Profile', href: '/profile', icon: UserCircle },
   { label: 'Settings', href: '/settings', icon: Settings },
 ];
 

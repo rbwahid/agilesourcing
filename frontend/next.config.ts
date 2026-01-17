@@ -52,7 +52,7 @@ const securityHeaders = [
       "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com data:",
-      "img-src 'self' data: https: blob:",
+      `img-src 'self' data: https: http: blob: ${apiOrigin}`,
       `connect-src 'self' ${apiOrigin} https://api.stripe.com`,
       "frame-src 'self' https://js.stripe.com https://hooks.stripe.com",
       "object-src 'none'",
@@ -65,6 +65,27 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '8000',
+        pathname: '/storage/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '8001',
+        pathname: '/storage/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'api.agilesourcing.io',
+        pathname: '/storage/**',
+      },
+    ],
+  },
   async headers() {
     return [
       {
