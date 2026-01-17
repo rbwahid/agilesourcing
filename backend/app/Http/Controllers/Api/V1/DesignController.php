@@ -56,10 +56,10 @@ class DesignController extends Controller
             'ai_analysis_status' => 'pending',
         ]);
 
-        // Store file in design-specific directory on private disk
+        // Store file in design-specific directory on public disk
         $path = $file->store(
             'designs/'.$design->id,
-            'private'
+            'public'
         );
 
         // Update design with file path
@@ -121,13 +121,13 @@ class DesignController extends Controller
 
         // Delete file from storage
         if ($design->file_path) {
-            Storage::disk('private')->delete($design->file_path);
+            Storage::disk('public')->delete($design->file_path);
         }
 
         // Delete variation files
         foreach ($design->variations as $variation) {
             if ($variation->file_path) {
-                Storage::disk('private')->delete($variation->file_path);
+                Storage::disk('public')->delete($variation->file_path);
             }
         }
 
@@ -246,7 +246,7 @@ class DesignController extends Controller
         // Delete existing variations and their files
         foreach ($design->variations as $variation) {
             if ($variation->file_path) {
-                Storage::disk('private')->delete($variation->file_path);
+                Storage::disk('public')->delete($variation->file_path);
             }
             $variation->delete();
         }

@@ -266,6 +266,7 @@ export default function DesignDetailPage({ params }: DesignDetailPageProps) {
                       src={design.file_url}
                       alt={design.title}
                       fill
+                      unoptimized
                       className="object-contain"
                       sizes="(max-width: 1024px) 100vw, 60vw"
                       priority
@@ -333,6 +334,7 @@ export default function DesignDetailPage({ params }: DesignDetailPageProps) {
               src={design.file_url}
               alt={design.title}
               fill
+              unoptimized
               className="object-contain"
               sizes="90vw"
             />
