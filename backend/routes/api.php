@@ -60,6 +60,15 @@ Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']
 
 /*
 |--------------------------------------------------------------------------
+| Email Verification (Public with Signed URL)
+|--------------------------------------------------------------------------
+*/
+Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
+    ->middleware('signed')
+    ->name('verification.verify');
+
+/*
+|--------------------------------------------------------------------------
 | Protected Routes (Requires Authentication)
 |--------------------------------------------------------------------------
 */
@@ -72,14 +81,10 @@ Route::middleware('auth:sanctum')->group(function () {
     // Logout
     Route::post('/logout', LogoutController::class)->name('logout');
 
-    // Email Verification
+    // Email Verification - Resend (requires auth)
     Route::post('/email/verification-notification', [EmailVerificationController::class, 'resend'])
         ->middleware('throttle:6,1')
         ->name('verification.send');
-
-    Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
-        ->middleware('signed')
-        ->name('verification.verify');
 
     /*
     |--------------------------------------------------------------------------
